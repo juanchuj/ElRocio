@@ -454,6 +454,7 @@ select { padding-right: 24px; }
 .form-hint { font-size: 11px; color: var(--meta); margin-top: 2px; font-style: italic; }
 .form-row input, .form-row select, .form-row textarea { width: 100%; }
 textarea { resize: vertical; min-height: 60px; font-family: 'Inter', sans-serif; }
+.details-area { width: 100%; min-height: 140px; line-height: 1.55; padding: 12px 14px; font-size: 13px; }
 
 .prio-picker { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
 .prio-opt { padding: 8px 4px; border: 1px solid var(--hairline); background: var(--card-alt); cursor: pointer; border-radius: var(--radius); text-align: center; transition: all 0.12s; display: flex; flex-direction: column; align-items: center; gap: 2px; }
@@ -579,7 +580,7 @@ textarea { resize: vertical; min-height: 60px; font-family: 'Inter', sans-serif;
       <div class="brand-left">
         <h1 class="serif">Finca El Rocío</h1>
         <span class="subtitle">Control de Actividades</span>
-        <span class="version-tag" title="Versión de la aplicación">v1.4</span>
+        <span class="version-tag" title="Versión de la aplicación">v1.5</span>
       </div>
       <div class="brand-right">
         <button class="sync-pill" id="syncPill" onclick="openCloudModal()">
@@ -692,7 +693,9 @@ textarea { resize: vertical; min-height: 60px; font-family: 'Inter', sans-serif;
       <div class="materials-total"><span>Costo estimado total de insumos</span><strong id="materialsTotal">$ 0 COP</strong></div>
 
       <div class="section-label">Detalles adicionales</div>
-      <textarea id="actDetails" placeholder="Notas técnicas, condiciones específicas, contactos, referencias..."></textarea>
+      <div class="form-row full">
+        <textarea id="actDetails" class="details-area" placeholder="Notas técnicas, condiciones específicas, contactos, referencias, observaciones de campo..."></textarea>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="danger hidden" id="deleteActivityBtn" onclick="deleteActivity()">Eliminar actividad</button>
