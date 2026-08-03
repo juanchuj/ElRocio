@@ -1,0 +1,24 @@
+{
+  "name": "Finca El Rocío",
+  "short_name": "El Rocío",
+  "theme_color": "#3B5D2C",
+  "background_color": "#EDEEE6",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "icn/favicon-64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "icn/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "icn/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
