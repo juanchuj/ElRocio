@@ -10,26 +10,17 @@
 <meta name="apple-mobile-web-app-title" content="Finca El Rocío">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="application-name" content="Finca El Rocío">
-
-<!-- +++++++++++APP+++++++++++ -->
 <!-- Favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="icn/favicon-16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="icn/favicon-32.png">
 <link rel="icon" type="image/png" sizes="64x64" href="icn/favicon-64.png">
 <link rel="shortcut icon" href="icn/favicon.ico">
-
 <!-- Apple -->
 <link rel="apple-touch-icon" sizes="180x180" href="icn/apple-touch-icon.png">
-
 <!-- Android / PWA -->
 <link rel="manifest" href="manifest.webmanifest">
-
-<meta name="theme-color" content="#3B5D2C">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Finca El Rocío">
-<!-- +++++++++++APP+++++++++++ -->
-
-  
+<!-- Fallback SVG icon (works even without the icn/ files present) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%233B5D2C'/%3E%3Ctext x='16' y='24' font-family='Georgia,serif' font-size='22' font-weight='600' fill='%23F8F7F0' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -211,6 +202,22 @@ html, body {
 .toolbar { max-width: 1600px; margin: 0 auto; padding: 14px 24px 10px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 .toolbar .spacer { flex: 1; }
 .toolbar-group { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.toolbar-divider { width: 1px; height: 22px; background: var(--hairline); margin: 0 4px; }
+.data-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid var(--hairline);
+  background: var(--card-alt);
+  color: var(--ink-soft);
+  padding: 7px 12px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.data-btn:hover { background: var(--card); border-color: var(--primary); color: var(--primary); }
 
 button, .btn {
   font-family: 'Inter', sans-serif;
@@ -248,7 +255,7 @@ select:focus, input:focus, textarea:focus { border-color: var(--primary); }
 select { padding-right: 24px; }
 
 .board-wrap { max-width: 1600px; margin: 0 auto; padding: 4px 24px 40px; overflow-x: auto; }
-.board { display: grid; grid-template-columns: repeat(5, minmax(280px, 1fr)); gap: 14px; min-width: 1400px; }
+.board { display: grid; grid-template-columns: repeat(5, minmax(280px, 1fr)); gap: 14px; min-width: 1400px; align-items: start; }
 
 .column {
   background: var(--bg-deep);
@@ -256,7 +263,7 @@ select { padding-right: 24px; }
   border: 1px solid var(--hairline-soft);
   display: flex;
   flex-direction: column;
-  min-height: 60vh;
+  min-height: 120px;
 }
 .column.drag-over { background: var(--primary-soft); border-color: var(--primary); }
 .column.espera { background: #F4EFE4; }
@@ -270,6 +277,22 @@ select { padding-right: 24px; }
 .col-count { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--meta); background: var(--bg); padding: 2px 6px; border-radius: 3px; border: 1px solid var(--hairline-soft); }
 .col-meta { display: flex; gap: 10px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--meta); letter-spacing: 0.02em; }
 .col-meta span strong { color: var(--ink); font-weight: 600; }
+.archive-btn {
+  margin-top: 10px;
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid var(--hairline);
+  background: var(--card-alt);
+  color: var(--ink-soft);
+  padding: 6px 10px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  letter-spacing: 0.01em;
+}
+.archive-btn:hover { background: var(--terminado); color: #F8F7F0; border-color: var(--terminado); }
 
 .col-body {
   padding: 10px;
@@ -278,8 +301,9 @@ select { padding-right: 24px; }
   gap: 10px;
   flex: 1;
   overflow-y: auto;
-  max-height: calc(100vh - 240px);
+  max-height: 3300px;
 }
+.col-body.compact-cards { max-height: 1500px; }
 .col-body::-webkit-scrollbar { width: 6px; }
 .col-body::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: 3px; }
 
@@ -299,6 +323,17 @@ select { padding-right: 24px; }
 .card:hover { box-shadow: var(--shadow-md); border-color: var(--hairline); }
 .card.dragging { opacity: 0.4; }
 .card-thread { height: 3px; background: var(--primary); width: 100%; }
+
+/* Compact card mode: only project, title, priority */
+.board.compact .card-body { padding: 8px 10px 9px; }
+.board.compact .card-lots,
+.board.compact .card-metrics,
+.board.compact .card-footer,
+.board.compact .overdue-alert { display: none !important; }
+.board.compact .card-title { font-size: 13px; margin: 4px 0 0; }
+.board.compact .priority-badge { width: 26px; height: 26px; font-size: 15px; }
+.board.compact .priority-badge::after { display: none; }
+.board.compact .card-top { margin-bottom: 0; }
 .card-body { padding: 10px 12px 12px; position: relative; }
 .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 4px; }
 .card-project-wrap { flex: 1; min-width: 0; }
@@ -353,6 +388,25 @@ select { padding-right: 24px; }
 .card-cost .unit { font-size: 9px; color: var(--meta); font-weight: 400; margin-left: 2px; }
 .card-date { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--meta); }
 .card-date.planned { color: var(--primary); font-weight: 600; }
+.overdue-alert {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 8px;
+  padding: 5px 8px;
+  background: var(--amber-soft);
+  border: 1px solid var(--amber);
+  border-radius: 4px;
+  font-size: 10px;
+  color: #8A4E15;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  width: 100%;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.overdue-alert:hover { background: #EED4B4; }
+.overdue-alert .ico { font-size: 12px; line-height: 1; }
 
 .modal-backdrop {
   position: fixed;
@@ -441,11 +495,29 @@ textarea { resize: vertical; min-height: 60px; font-family: 'Inter', sans-serif;
 .calc-box { padding: 10px 12px; background: var(--primary-soft); border-radius: var(--radius); font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink-soft); }
 .calc-box strong { color: var(--primary); font-size: 14px; }
 
+.dur-mode-toggle { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-soft); cursor: pointer; padding: 8px 10px; background: var(--card); border: 1px solid var(--hairline-soft); border-radius: var(--radius); }
+.dur-mode-toggle input { width: auto; }
+.dur-field { display: flex; align-items: center; gap: 6px; }
+.dur-field input { flex: 1; font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+.dur-field.edited input { border-color: var(--amber); background: #FDF6EC; }
+.dur-unit { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--meta); }
+.dur-hint { font-size: 10px; color: var(--meta); font-style: italic; margin-top: 2px; }
+.dur-hint.edited { color: var(--amber); font-weight: 600; font-style: normal; letter-spacing: 0.02em; }
+.dur-reset { align-self: flex-start; margin-top: 4px; padding: 3px 8px; font-size: 10px; background: transparent; border: 1px solid var(--hairline); color: var(--ink-soft); }
+.dur-reset:hover { background: var(--bg-deep); }
+#jornalesGrid.external-mode #actJornales,
+#jornalesGrid.external-mode #actPersonas { opacity: 0.4; pointer-events: none; background: var(--bg-deep); }
+
 .section-label { font-family: 'Fraunces', serif; font-size: 13px; font-weight: 500; color: var(--ink); margin: 18px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--hairline-soft); font-variation-settings: "opsz" 24; }
 .section-label:first-child { margin-top: 0; }
 
 .projects-list { display: flex; flex-direction: column; gap: 6px; }
-.project-item { display: grid; grid-template-columns: 24px 1fr 100px 60px 40px; gap: 10px; align-items: center; padding: 8px 10px; background: var(--card); border: 1px solid var(--hairline-soft); border-radius: var(--radius); }
+.project-item { display: grid; grid-template-columns: 24px 1fr 100px 90px 60px 40px; gap: 10px; align-items: center; padding: 8px 10px; background: var(--card); border: 1px solid var(--hairline-soft); border-radius: var(--radius); }
+.project-item.is-child { margin-left: 24px; background: var(--card-alt); border-left: 3px solid var(--hairline); }
+.project-item.is-child .project-name-input { font-size: 12px; }
+.project-child-marker { color: var(--meta); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+.project-parent-select { padding: 5px 6px; font-size: 10px; border: 1px solid transparent; background: transparent; color: var(--ink-soft); }
+.project-parent-select:focus { border-color: var(--hairline); background: var(--card-alt); }
 .project-swatch { width: 16px; height: 16px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.1); cursor: pointer; }
 .project-name-input { padding: 5px 8px; font-size: 13px; border: 1px solid transparent; background: transparent; }
 .project-name-input:focus { border-color: var(--hairline); background: var(--card-alt); }
@@ -493,7 +565,7 @@ textarea { resize: vertical; min-height: 60px; font-family: 'Inter', sans-serif;
       <div class="brand-left">
         <h1 class="serif">Finca El Rocío</h1>
         <span class="subtitle">Control de Actividades</span>
-        <span class="version-tag" title="Versión de la aplicación">v1.0</span>
+        <span class="version-tag" title="Versión de la aplicación">v1.3</span>
       </div>
       <div class="brand-right">
         <button class="sync-pill" id="syncPill" onclick="openCloudModal()">
@@ -505,6 +577,7 @@ textarea { resize: vertical; min-height: 60px; font-family: 'Inter', sans-serif;
 
     <div class="summary" id="summary">
       <div class="stat"><div class="stat-label">Actividades activas</div><div class="stat-value" id="statActive">0</div></div>
+      <div class="stat"><div class="stat-label">En espera</div><div class="stat-value" id="statEspera">0</div></div>
       <div class="stat"><div class="stat-label">Jornales pendientes</div><div class="stat-value" id="statJornales">0</div></div>
       <div class="stat"><div class="stat-label">Costo estimado activo</div><div class="stat-value" id="statCost">$ 0<span class="unit">COP</span></div></div>
       <div class="stat"><div class="stat-label">Lotes intervenidos</div><div class="stat-value" id="statLots">0 <span class="unit">de 20</span></div></div>
@@ -533,10 +606,12 @@ textarea { resize: vertical; min-height: 60px; font-family: 'Inter', sans-serif;
     <select id="filterProject" onchange="renderBoard()"><option value="">Todos los proyectos</option></select>
     <select id="filterLot" onchange="renderBoard()"><option value="">Todos los lotes</option></select>
   </div>
+  <button id="densityBtn" class="data-btn" onclick="toggleDensity()" title="Cambiar entre fichas estándar y compactas">▭ Fichas: Estándar</button>
   <div class="spacer"></div>
-  <div class="toolbar-group">
-    <button class="ghost" onclick="exportData()">Descargar copia</button>
-    <button class="ghost" onclick="document.getElementById('importInput').click()">Importar</button>
+  <div class="toolbar-group data-actions">
+    <span class="toolbar-divider"></span>
+    <button class="data-btn" onclick="exportData()" title="Descargar una copia de respaldo en JSON">⬇ Descargar copia</button>
+    <button class="data-btn" onclick="document.getElementById('importInput').click()" title="Cargar datos desde un archivo JSON">⬆ Importar</button>
     <input type="file" id="importInput" accept=".json" style="display:none" onchange="importData(event)">
   </div>
 </div>
@@ -577,10 +652,24 @@ textarea { resize: vertical; min-height: 60px; font-family: 'Inter', sans-serif;
       <div class="lot-picker" id="lotPicker"></div>
 
       <div class="section-label">Recursos y duración</div>
-      <div class="form-grid three">
-        <div class="form-row"><label class="form-label">Jornales estimados</label><input type="number" id="actJornales" min="0" step="0.5" value="0" oninput="updateDuration()"></div>
-        <div class="form-row"><label class="form-label">Personas asignadas</label><input type="number" id="actPersonas" min="1" step="1" value="1" oninput="updateDuration()"></div>
-        <div class="form-row"><label class="form-label">Duración calculada</label><div class="calc-box" id="durationBox"><strong>0.0</strong> días</div></div>
+      <div class="form-row" style="margin-bottom: 12px;">
+        <label class="dur-mode-toggle">
+          <input type="checkbox" id="actExternal" onchange="toggleExternalMode()">
+          <span>Actividad contratada con externo (sin jornales de la cuadrilla)</span>
+        </label>
+      </div>
+      <div class="form-grid three" id="jornalesGrid">
+        <div class="form-row"><label class="form-label">Jornales estimados</label><input type="number" id="actJornales" min="0" step="0.5" value="0" oninput="onJornalesChange()"></div>
+        <div class="form-row"><label class="form-label">Personas asignadas</label><input type="number" id="actPersonas" min="1" step="1" value="1" oninput="onJornalesChange()"></div>
+        <div class="form-row">
+          <label class="form-label" id="durLabelEl">Duración calculada</label>
+          <div class="dur-field">
+            <input type="number" id="actDuration" min="0" step="0.5" value="0" oninput="onDurationManualInput()">
+            <span class="dur-unit">días</span>
+          </div>
+          <div class="dur-hint" id="durHint">Calculada: jornales ÷ personas</div>
+          <button type="button" class="dur-reset hidden" id="durResetBtn" onclick="resetDuration()">↺ Volver a calcular</button>
+        </div>
       </div>
 
       <div class="section-label">Insumos y materiales</div>
@@ -593,6 +682,7 @@ textarea { resize: vertical; min-height: 60px; font-family: 'Inter', sans-serif;
     </div>
     <div class="modal-footer">
       <button class="danger hidden" id="deleteActivityBtn" onclick="deleteActivity()">Eliminar actividad</button>
+      <button class="ghost hidden" id="duplicateActivityBtn" onclick="duplicateActivity()">⧉ Duplicar</button>
       <div class="spacer"></div>
       <div class="footer-actions">
         <button onclick="requestCloseActivity()">Cancelar</button>
@@ -1004,41 +1094,39 @@ function renderCloudModal() {
 }
 
 // ============ STATE / LOAD ============
+function migrateState() {
+  if (!state.projects) state.projects = [];
+  if (!state.activities) state.activities = [];
+  state.projects.forEach(p => {
+    if (p.parentId === undefined) p.parentId = null;
+  });
+  state.activities.forEach(a => {
+    if (a.priority === undefined) a.priority = 3;
+    if (a.fechaPlaneada === undefined) a.fechaPlaneada = null;
+    if (a.durationManual === undefined) a.durationManual = null;
+    if (Array.isArray(a.materials)) {
+      a.materials = a.materials.map(m => {
+        if (m.quantity === undefined) return { name: m.name||'', quantity: 1, unit: '', unitCost: Number(m.cost)||0 };
+        return m;
+      });
+    }
+  });
+}
+
 function loadState() {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (raw) {
     try {
       state = JSON.parse(raw);
-      if (!state.projects) state.projects = [];
-      if (!state.activities) state.activities = [];
-      state.activities.forEach(a => {
-        if (a.priority === undefined) a.priority = 3;
-        if (a.fechaPlaneada === undefined) a.fechaPlaneada = null;
-        if (Array.isArray(a.materials)) {
-          a.materials = a.materials.map(m => {
-            if (m.quantity === undefined) return { name: m.name||'', quantity: 1, unit: '', unitCost: Number(m.cost)||0 };
-            return m;
-          });
-        }
-      });
+      migrateState();
       return;
     } catch (e) { console.error('Load error', e); }
   }
-  // Also check legacy keys
   const legacy = localStorage.getItem('finca-el-rocio-kanban-v2') || localStorage.getItem('finca-el-rocio-kanban-v1');
   if (legacy) {
     try {
       state = JSON.parse(legacy);
-      state.activities.forEach(a => {
-        if (a.priority === undefined) a.priority = 3;
-        if (a.fechaPlaneada === undefined) a.fechaPlaneada = null;
-        if (Array.isArray(a.materials)) {
-          a.materials = a.materials.map(m => {
-            if (m.quantity === undefined) return { name: m.name||'', quantity: 1, unit: '', unitCost: Number(m.cost)||0 };
-            return m;
-          });
-        }
-      });
+      migrateState();
       saveLocal();
       return;
     } catch (e) {}
@@ -1047,12 +1135,15 @@ function loadState() {
 }
 
 function seedState() {
+  const idEspeciales = uid();
   state = {
     projects: [
-      { id: uid(), name: 'Abonar la Finca', type: 'recurrente', color: '#3B5D2C', description: 'Programa recurrente de fertilización.' },
-      { id: uid(), name: 'Control de arvenses', type: 'recurrente', color: '#4A6B3E', description: 'Manejo integrado de arvenses.' },
-      { id: uid(), name: 'Manejo de sombrío', type: 'recurrente', color: '#7A6E3B', description: 'Podas de regulación de sombrío.' },
-      { id: uid(), name: 'Siembra Cafés Especiales', type: 'proyecto', color: '#8B6F2A', description: 'Siembra de variedades especiales.' },
+      { id: uid(), name: 'Abonar la Finca', type: 'recurrente', color: '#3B5D2C', description: 'Programa recurrente de fertilización.', parentId: null },
+      { id: uid(), name: 'Control de arvenses', type: 'recurrente', color: '#4A6B3E', description: 'Manejo integrado de arvenses.', parentId: null },
+      { id: uid(), name: 'Manejo de sombrío', type: 'recurrente', color: '#7A6E3B', description: 'Podas de regulación de sombrío.', parentId: null },
+      { id: idEspeciales, name: 'Siembra Cafés Especiales', type: 'proyecto', color: '#8B6F2A', description: 'Siembra de variedades especiales.', parentId: null },
+      { id: uid(), name: 'Siembra Borbón Rosado', type: 'proyecto', color: '#C9782A', description: 'Sub-proyecto de cafés especiales.', parentId: idEspeciales },
+      { id: uid(), name: 'Siembra Geisha', type: 'proyecto', color: '#A63D2A', description: 'Sub-proyecto de cafés especiales.', parentId: idEspeciales },
     ],
     activities: [],
     _syncedAt: null,
@@ -1077,7 +1168,39 @@ function fmtCOPk(n) { if (!n) return '$0'; if (n>=1000000) return '$'+(n/1000000
 function fmtDate(iso) { if (!iso) return ''; const d = new Date(iso); return `${String(d.getDate()).padStart(2,'0')}·${String(d.getMonth()+1).padStart(2,'0')}·${String(d.getFullYear()).slice(-2)}`; }
 function fmtDateShort(d) { const m=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']; return `${d.getDate()} ${m[d.getMonth()]}`; }
 function activityCost(act) { return (act.materials||[]).reduce((s,m)=>s+((Number(m.quantity)||0)*(Number(m.unitCost)||0)),0); }
-function activityDuration(act) { const j=Number(act.jornales)||0, p=Number(act.personas)||1; return p===0?0:j/p; }
+function activityDuration(act) {
+  // If manually edited, use the manual value
+  if (act.durationManual !== null && act.durationManual !== undefined && act.durationManual !== '') {
+    return Number(act.durationManual) || 0;
+  }
+  const j=Number(act.jornales)||0, p=Number(act.personas)||1;
+  return p===0?0:j/p;
+}
+function isDurationEdited(act) {
+  return act.durationManual !== null && act.durationManual !== undefined && act.durationManual !== '';
+}
+
+// ============ PROJECT HIERARCHY ============
+function getProject(id) { return state.projects.find(p=>p.id===id); }
+function getChildProjects(parentId) { return state.projects.filter(p=>p.parentId===parentId); }
+function getParentProjects() { return state.projects.filter(p=>!p.parentId); }
+// An activity matches a filter if its project IS the filter, or its project is a CHILD of the filter
+function projectMatchesFilter(activityProjectId, filterId) {
+  if (!activityProjectId) return false;
+  if (activityProjectId === filterId) return true;
+  const proj = getProject(activityProjectId);
+  if (proj && proj.parentId === filterId) return true;
+  return false;
+}
+function projectDisplayName(id) {
+  const p = getProject(id);
+  if (!p) return 'Sin proyecto';
+  if (p.parentId) {
+    const parent = getProject(p.parentId);
+    return parent ? `${parent.name} › ${p.name}` : p.name;
+  }
+  return p.name;
+}
 
 // ============ WEEK UTILS ============
 function startOfWeek(d) { const date=new Date(d); const day=date.getDay(); const diff=(day===0?-6:1-day); date.setDate(date.getDate()+diff); date.setHours(0,0,0,0); return date; }
@@ -1094,7 +1217,7 @@ function renderWorkload() {
     const we=endOfWeek(ws);
     weeks.push({ start: ws, end: we, jornales: 0, cost: 0, count: 0 });
   }
-  state.activities.forEach(a => {
+  getFilteredActivities().forEach(a => {
     if (!a.fechaPlaneada) return;
     if (a.status==='terminado' || a.status==='ideado') return;
     const d = new Date(a.fechaPlaneada+'T00:00:00');
@@ -1136,15 +1259,18 @@ function renderWorkload() {
 }
 
 // ============ BOARD ============
+let compactMode = false;
+
 function renderBoard() {
   const board = document.getElementById('board');
+  board.classList.toggle('compact', compactMode);
   const fp = document.getElementById('filterProject').value;
   const fl = document.getElementById('filterLot').value;
   board.innerHTML = '';
   COLUMNS.forEach(col => {
     let acts = state.activities.filter(a => {
       if (a.status !== col.id) return false;
-      if (fp && a.projectId !== fp) return false;
+      if (fp && !projectMatchesFilter(a.projectId, fp)) return false;
       if (fl && !(a.lots||[]).includes(fl)) return false;
       return true;
     });
@@ -1154,12 +1280,16 @@ function renderBoard() {
     const el = document.createElement('div');
     el.className = `column ${col.id}`;
     el.dataset.status = col.id;
+    const archiveBtn = (col.id === 'terminado' && acts.length > 0)
+      ? `<button class="archive-btn" onclick="archiveTerminadas()" title="Descargar un archivo con estas tareas y luego eliminarlas del tablero">🗄 Archivar terminadas</button>`
+      : '';
     el.innerHTML = `
       <div class="col-header">
         <div class="col-title-row"><div class="col-title serif">${col.title}</div><div class="col-count mono">${acts.length}</div></div>
         <div class="col-meta"><span><strong>${totalJ}</strong> jornales</span><span>·</span><span><strong>${fmtCOP(totalC)}</strong></span></div>
+        ${archiveBtn}
       </div>
-      <div class="col-body" data-status="${col.id}">
+      <div class="col-body ${compactMode?'compact-cards':''}" data-status="${col.id}">
         ${acts.length===0 ? `<div class="col-empty">Sin actividades</div>` : acts.map(a=>renderCard(a)).join('')}
       </div>
     `;
@@ -1170,19 +1300,44 @@ function renderBoard() {
   renderWorkload();
 }
 
+function toggleDensity() {
+  compactMode = !compactMode;
+  document.getElementById('densityBtn').textContent = compactMode ? '▤ Fichas: Compactas' : '▭ Fichas: Estándar';
+  try { localStorage.setItem('finca-density', compactMode ? '1' : '0'); } catch(e){}
+  renderBoard();
+}
+
 function renderCard(act) {
   const project = state.projects.find(p=>p.id===act.projectId);
-  const projectName = project ? project.name : 'Sin proyecto';
+  const projectName = project ? projectDisplayName(project.id) : 'Sin proyecto';
   const projectColor = project ? project.color : '#7B7A6E';
   const cost = activityCost(act);
   const lotChips = (act.lots||[]).slice(0,3).map(lid=>`<span class="lot-chip">${lid}</span>`).join('');
   const extra = (act.lots||[]).length>3 ? `<span class="lot-chip more">+${act.lots.length-3}</span>` : '';
   const dur = activityDuration(act);
+  const durEdited = isDurationEdited(act);
   const prio = act.priority || 3;
   const prioLbl = PRIORITY_LABELS[prio];
   const dateDisplay = act.fechaPlaneada
     ? `<div class="card-date planned">▸ ${fmtDate(act.fechaPlaneada)}</div>`
     : `<div class="card-date">${fmtDate(act.statusChangedAt||act.createdAt)}</div>`;
+
+  // Overdue: planned/execution activity with a past planned date, not yet finished
+  let overdueBanner = '';
+  if (act.fechaPlaneada && (act.status==='planeado' || act.status==='ejecucion')) {
+    const today = new Date(); today.setHours(0,0,0,0);
+    const planned = new Date(act.fechaPlaneada+'T00:00:00');
+    if (planned < today) {
+      const daysLate = Math.floor((today - planned) / 86400000);
+      overdueBanner = `<div class="overdue-alert" onclick="event.stopPropagation(); moveToEspera('${act.id}')" title="Clic para mover a En espera">
+        <span class="ico">⚠</span>
+        <span>Vencida hace ${daysLate} día${daysLate!==1?'s':''} · ¿mover a En espera?</span>
+      </div>`;
+    }
+  }
+
+  const durLabel = durEdited ? 'Días ✎' : 'Días';
+  const durTitle = durEdited ? 'Duración editada manualmente' : 'Duración calculada (jornales ÷ personas)';
 
   return `<div class="card" draggable="true" data-id="${act.id}" onclick="openActivityModal('${act.id}')">
     <div class="card-thread" style="background: ${projectColor}"></div>
@@ -1196,37 +1351,99 @@ function renderCard(act) {
       <div class="card-metrics">
         <div class="metric"><div class="metric-label">Jornales</div><div class="metric-value">${act.jornales||0}</div></div>
         <div class="metric"><div class="metric-label">Personas</div><div class="metric-value">${act.personas||1}</div></div>
-        <div class="metric"><div class="metric-label">Días</div><div class="metric-value">${dur.toFixed(1)}</div></div>
+        <div class="metric" title="${durTitle}"><div class="metric-label">${durLabel}</div><div class="metric-value">${dur.toFixed(1)}</div></div>
       </div>
       <div class="card-footer">
         <div class="card-cost">${fmtCOP(cost)} <span class="unit">COP</span></div>
         ${dateDisplay}
       </div>
+      ${overdueBanner}
     </div>
   </div>`;
 }
 
+function moveToEspera(id) {
+  const act = state.activities.find(a=>a.id===id);
+  if (!act) return;
+  act.status = 'espera';
+  act.statusChangedAt = new Date().toISOString();
+  saveState();
+  renderBoard();
+}
+
 function escapeHTML(s) { return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
+function getFilteredActivities() {
+  const fp = document.getElementById('filterProject').value;
+  const fl = document.getElementById('filterLot').value;
+  return state.activities.filter(a => {
+    if (fp && !projectMatchesFilter(a.projectId, fp)) return false;
+    if (fl && !(a.lots||[]).includes(fl)) return false;
+    return true;
+  });
+}
+
 function renderSummary() {
-  const active = state.activities.filter(a=>a.status!=='terminado');
-  const done = state.activities.filter(a=>a.status==='terminado');
-  const pending = active.filter(a=>a.status!=='espera');
-  const totalJ = pending.reduce((s,a)=>s+(Number(a.jornales)||0),0);
-  const totalC = active.reduce((s,a)=>s+activityCost(a),0);
+  const scoped = getFilteredActivities();
+  // Activas: en ejecución + planeadas (NO ideadas, NO en espera, NO terminadas)
+  const active = scoped.filter(a => a.status==='ejecucion' || a.status==='planeado');
+  // En espera: propia métrica
+  const espera = scoped.filter(a => a.status==='espera');
+  const done = scoped.filter(a => a.status==='terminado');
+  // Jornales pendientes: todo lo activo y en espera, excluyendo ideadas y terminadas
+  const jornalScope = scoped.filter(a => a.status==='ejecucion' || a.status==='planeado' || a.status==='espera');
+  const totalJ = jornalScope.reduce((s,a)=>s+(Number(a.jornales)||0),0);
+  // Costo activo: excluye ideadas y terminadas
+  const costScope = scoped.filter(a => a.status==='ejecucion' || a.status==='planeado' || a.status==='espera');
+  const totalC = costScope.reduce((s,a)=>s+activityCost(a),0);
+  // Lotes intervenidos: sobre lo no terminado y no ideado
   const usedLots = new Set();
-  active.forEach(a=>(a.lots||[]).forEach(l=>usedLots.add(l)));
+  scoped.filter(a => a.status!=='terminado' && a.status!=='ideado').forEach(a=>(a.lots||[]).forEach(l=>usedLots.add(l)));
+
   document.getElementById('statActive').textContent = active.length;
+  document.getElementById('statEspera').textContent = espera.length;
   document.getElementById('statJornales').textContent = totalJ;
   document.getElementById('statCost').innerHTML = `${fmtCOP(totalC)}<span class="unit">COP</span>`;
   document.getElementById('statLots').innerHTML = `${usedLots.size} <span class="unit">de ${LOTS.length}</span>`;
   document.getElementById('statDone').textContent = done.length;
 }
 
+function buildProjectOptions() {
+  let html = '<option value="">Todos los proyectos</option>';
+  getParentProjects().forEach(parent => {
+    const children = getChildProjects(parent.id);
+    if (children.length > 0) {
+      html += `<optgroup label="${escapeHTML(parent.name)}">`;
+      html += `<option value="${parent.id}">${escapeHTML(parent.name)} (todo)</option>`;
+      children.forEach(c => { html += `<option value="${c.id}">&nbsp;&nbsp;└ ${escapeHTML(c.name)}</option>`; });
+      html += `</optgroup>`;
+    } else {
+      html += `<option value="${parent.id}">${escapeHTML(parent.name)}</option>`;
+    }
+  });
+  return html;
+}
+
+function buildActivityProjectOptions() {
+  let html = '';
+  getParentProjects().forEach(parent => {
+    const children = getChildProjects(parent.id);
+    if (children.length > 0) {
+      html += `<optgroup label="${escapeHTML(parent.name)}">`;
+      html += `<option value="${parent.id}">${escapeHTML(parent.name)}</option>`;
+      children.forEach(c => { html += `<option value="${c.id}">&nbsp;&nbsp;└ ${escapeHTML(c.name)}</option>`; });
+      html += `</optgroup>`;
+    } else {
+      html += `<option value="${parent.id}">${escapeHTML(parent.name)}</option>`;
+    }
+  });
+  return html;
+}
+
 function renderFilters() {
   const projSel = document.getElementById('filterProject');
   const cp = projSel.value;
-  projSel.innerHTML = '<option value="">Todos los proyectos</option>' + state.projects.map(p=>`<option value="${p.id}">${escapeHTML(p.name)}</option>`).join('');
+  projSel.innerHTML = buildProjectOptions();
   projSel.value = cp;
   const lotSel = document.getElementById('filterLot');
   const cl = lotSel.value;
@@ -1270,17 +1487,19 @@ function setupDragDrop() {
 function openActivityModal(id) {
   editingActivityId = id || null;
   const projSel = document.getElementById('actProject');
-  projSel.innerHTML = state.projects.length===0 ? '<option value="">(Cree un proyecto primero)</option>' : state.projects.map(p=>`<option value="${p.id}">${escapeHTML(p.name)}</option>`).join('');
+  projSel.innerHTML = state.projects.length===0 ? '<option value="">(Cree un proyecto primero)</option>' : buildActivityProjectOptions();
   renderLotPicker([]);
   const eyebrow = document.getElementById('activityEyebrow');
   const titleEl = document.getElementById('activityTitle');
   const delBtn = document.getElementById('deleteActivityBtn');
+  const dupBtn = document.getElementById('duplicateActivityBtn');
   if (id) {
     const a = state.activities.find(x=>x.id===id);
     if (!a) return;
     titleEl.textContent = a.name || 'Actividad';
     eyebrow.childNodes[0].textContent = 'Editar actividad';
     delBtn.classList.remove('hidden');
+    dupBtn.classList.remove('hidden');
     document.getElementById('actName').value = a.name || '';
     document.getElementById('actProject').value = a.projectId || (state.projects[0]?.id || '');
     document.getElementById('actStatus').value = a.status || 'ideado';
@@ -1288,14 +1507,25 @@ function openActivityModal(id) {
     document.getElementById('actPersonas').value = a.personas || 1;
     document.getElementById('actDetails').value = a.details || '';
     document.getElementById('actFechaPlaneada').value = a.fechaPlaneada || '';
+    document.getElementById('actExternal').checked = !!a.external;
+    document.getElementById('jornalesGrid').classList.toggle('external-mode', !!a.external);
     selectPriority(a.priority || 3, true);
     renderLotPicker(a.lots || []);
     renderMaterials(a.materials || []);
-    updateDuration();
+    // Duration: manual if durationManual set OR external
+    if (isDurationEdited(a) || a.external) {
+      durationIsManual = true;
+      document.getElementById('actDuration').value = Number(activityDuration(a)).toFixed(1);
+    } else {
+      durationIsManual = false;
+      document.getElementById('actDuration').value = calcAutoDuration().toFixed(1);
+    }
+    refreshDurationUI();
   } else {
     titleEl.textContent = 'Registrar actividad';
     eyebrow.childNodes[0].textContent = 'Nueva actividad';
     delBtn.classList.add('hidden');
+    dupBtn.classList.add('hidden');
     document.getElementById('actName').value = '';
     document.getElementById('actProject').value = state.projects[0]?.id || '';
     document.getElementById('actStatus').value = 'ideado';
@@ -1303,9 +1533,13 @@ function openActivityModal(id) {
     document.getElementById('actPersonas').value = 1;
     document.getElementById('actDetails').value = '';
     document.getElementById('actFechaPlaneada').value = '';
+    document.getElementById('actExternal').checked = false;
+    document.getElementById('jornalesGrid').classList.remove('external-mode');
     selectPriority(3, true);
     renderMaterials([]);
-    updateDuration();
+    durationIsManual = false;
+    document.getElementById('actDuration').value = '0.0';
+    refreshDurationUI();
   }
   activityDirty = false;
   updateDirtyIndicator('activity');
@@ -1406,29 +1640,104 @@ function updateMaterialsTotal() {
   document.getElementById('materialsTotal').textContent = `${fmtCOP(total)} COP`;
 }
 
-function updateDuration() {
+// Duration state within the modal
+let durationIsManual = false;
+
+function calcAutoDuration() {
   const j = Number(document.getElementById('actJornales').value) || 0;
   const p = Number(document.getElementById('actPersonas').value) || 1;
-  const d = p>0 ? j/p : 0;
-  document.getElementById('durationBox').innerHTML = `<strong>${d.toFixed(1)}</strong> días · ${j} jornales ÷ ${p} personas`;
+  return p>0 ? j/p : 0;
+}
+
+function refreshDurationUI() {
+  const durField = document.getElementById('actDuration').closest('.dur-field');
+  const hint = document.getElementById('durHint');
+  const label = document.getElementById('durLabelEl');
+  const resetBtn = document.getElementById('durResetBtn');
+  const external = document.getElementById('actExternal').checked;
+
+  if (durationIsManual || external) {
+    durField.classList.add('edited');
+    hint.classList.add('edited');
+    hint.textContent = external ? 'Valor editado (contratado con externo)' : 'Valor EDITADO manualmente';
+    label.textContent = 'Duración (editada)';
+    resetBtn.classList.toggle('hidden', external); // external has no auto value to reset to
+  } else {
+    durField.classList.remove('edited');
+    hint.classList.remove('edited');
+    hint.textContent = 'Calculada: jornales ÷ personas';
+    label.textContent = 'Duración calculada';
+    resetBtn.classList.add('hidden');
+  }
+}
+
+function onJornalesChange() {
+  // Only auto-update duration if not in manual mode
+  if (!durationIsManual && !document.getElementById('actExternal').checked) {
+    document.getElementById('actDuration').value = calcAutoDuration().toFixed(1);
+  }
+  refreshDurationUI();
   markActivityDirty();
 }
 
-function saveActivity() {
-  const name = document.getElementById('actName').value.trim();
-  if (!name) { alert('La actividad necesita un nombre.'); return; }
-  const data = {
-    name,
+function onDurationManualInput() {
+  durationIsManual = true;
+  refreshDurationUI();
+  markActivityDirty();
+}
+
+function resetDuration() {
+  durationIsManual = false;
+  document.getElementById('actDuration').value = calcAutoDuration().toFixed(1);
+  refreshDurationUI();
+  markActivityDirty();
+}
+
+function toggleExternalMode() {
+  const external = document.getElementById('actExternal').checked;
+  const grid = document.getElementById('jornalesGrid');
+  grid.classList.toggle('external-mode', external);
+  if (external) {
+    // External: no crew jornales; duration becomes a manual estimate
+    document.getElementById('actJornales').value = 0;
+    document.getElementById('actPersonas').value = 0;
+    durationIsManual = true;
+  } else {
+    document.getElementById('actPersonas').value = 1;
+    durationIsManual = false;
+    document.getElementById('actDuration').value = calcAutoDuration().toFixed(1);
+  }
+  refreshDurationUI();
+  markActivityDirty();
+}
+
+function readActivityForm() {
+  const external = document.getElementById('actExternal').checked;
+  const personas = external ? 0 : (Number(document.getElementById('actPersonas').value) || 1);
+  const jornales = external ? 0 : (Number(document.getElementById('actJornales').value) || 0);
+  let durationManual = null;
+  if (durationIsManual || external) {
+    durationManual = Number(document.getElementById('actDuration').value) || 0;
+  }
+  return {
+    name: document.getElementById('actName').value.trim(),
     projectId: document.getElementById('actProject').value || null,
     status: document.getElementById('actStatus').value,
     lots: getSelectedLots(),
-    jornales: Number(document.getElementById('actJornales').value) || 0,
-    personas: Number(document.getElementById('actPersonas').value) || 1,
+    jornales,
+    personas,
     materials: getMaterials(),
     details: document.getElementById('actDetails').value.trim(),
     fechaPlaneada: document.getElementById('actFechaPlaneada').value || null,
     priority: currentPriority,
+    external,
+    durationManual,
   };
+}
+
+function saveActivity() {
+  const data = readActivityForm();
+  if (!data.name) { alert('La actividad necesita un nombre.'); return; }
   if (editingActivityId) {
     const idx = state.activities.findIndex(a=>a.id===editingActivityId);
     const prev = state.activities[idx];
@@ -1441,6 +1750,40 @@ function saveActivity() {
   renderBoard();
   activityDirty = false;
   closeActivityModal();
+}
+
+function duplicateActivity() {
+  if (activityDirty) {
+    if (!confirm('Vas a duplicar usando los valores actuales del formulario.\n\nOJO: los cambios que hiciste a la ficha ORIGINAL no se guardarán a menos que uses Guardar. La copia sí se crea con lo que ves ahora.\n\n¿Continuar con la duplicación?')) return;
+  }
+  const data = readActivityForm();
+  const baseName = (data.name || 'Actividad').replace(/\s*\(copia( \d+)?\)\s*$/i, '');
+  // Find a unique "(copia)" name
+  let copyName = `${baseName} (copia)`;
+  let n = 2;
+  const existingNames = state.activities.map(a => (a.name||'').toLowerCase());
+  while (existingNames.includes(copyName.toLowerCase())) {
+    copyName = `${baseName} (copia ${n})`;
+    n++;
+  }
+  // New activity: copy everything but reset lifecycle fields
+  const now = new Date().toISOString();
+  const newId = uid();
+  state.activities.push({
+    id: newId,
+    ...data,
+    name: copyName,
+    status: 'ideado',        // start fresh in Ideado
+    fechaPlaneada: null,     // clear planned date
+    createdAt: now,
+    statusChangedAt: now,
+  });
+  saveState();
+  renderBoard();
+  activityDirty = false;
+  // Reopen modal on the new copy so the user can adjust it
+  closeActivityModal();
+  openActivityModal(newId);
 }
 
 function deleteActivity() {
@@ -1487,20 +1830,62 @@ function markProjectsDirty() { projectsDirty = true; updateDirtyIndicator('proje
 
 function renderProjectsList() {
   const list = document.getElementById('projectsList');
-  list.innerHTML = state.projects.map(p => {
-    const count = state.activities.filter(a=>a.projectId===p.id).length;
-    const jornales = state.activities.filter(a=>a.projectId===p.id).reduce((s,a)=>s+(Number(a.jornales)||0),0);
-    return `<div class="project-item">
-      <div class="project-swatch" style="background: ${p.color}" onclick="cycleProjectColor('${p.id}', event)" title="Cambiar color"></div>
-      <input class="project-name-input" value="${escapeHTML(p.name)}" onchange="updateProject('${p.id}', 'name', this.value)">
-      <select class="project-type-select" onchange="updateProject('${p.id}', 'type', this.value)">
-        <option value="recurrente" ${p.type==='recurrente'?'selected':''}>Recurrente</option>
-        <option value="proyecto" ${p.type==='proyecto'?'selected':''}>Proyecto</option>
-      </select>
-      <div class="project-stats">${count} act.<br>${jornales} jorn.</div>
-      <button class="danger mini-btn" onclick="deleteProject('${p.id}')">×</button>
-    </div>`;
-  }).join('') || '<p style="color: var(--meta); text-align: center; padding: 20px;">Aún no hay proyectos.</p>';
+  const rows = [];
+  const parents = getParentProjects();
+  parents.forEach(p => {
+    rows.push(projectRowHTML(p, false));
+    getChildProjects(p.id).forEach(c => rows.push(projectRowHTML(c, true)));
+  });
+  list.innerHTML = rows.join('') || '<p style="color: var(--meta); text-align: center; padding: 20px;">Aún no hay proyectos.</p>';
+}
+
+function projectRowHTML(p, isChild) {
+  // Count activities directly on this project; for parents also include children
+  let actIds;
+  if (isChild) {
+    actIds = state.activities.filter(a=>a.projectId===p.id);
+  } else {
+    const childIds = getChildProjects(p.id).map(c=>c.id);
+    actIds = state.activities.filter(a=>a.projectId===p.id || childIds.includes(a.projectId));
+  }
+  const count = actIds.length;
+  const jornales = actIds.reduce((s,a)=>s+(Number(a.jornales)||0),0);
+  // Parent selector: any top-level project except itself and except projects that already have children
+  const parentOptions = ['<option value="">— Sin padre —</option>'].concat(
+    getParentProjects().filter(pp => pp.id !== p.id).map(pp =>
+      `<option value="${pp.id}" ${p.parentId===pp.id?'selected':''}>${escapeHTML(pp.name)}</option>`
+    )
+  ).join('');
+  // A project can only be a parent-select target if IT has no children (avoid 3-level nesting)
+  const hasChildren = getChildProjects(p.id).length > 0;
+  const parentCell = hasChildren
+    ? `<div class="project-child-marker" title="Este proyecto tiene sub-proyectos">padre</div>`
+    : `<select class="project-parent-select" onchange="setProjectParent('${p.id}', this.value)">${parentOptions}</select>`;
+
+  return `<div class="project-item ${isChild?'is-child':''}">
+    <div class="project-swatch" style="background: ${p.color}" onclick="cycleProjectColor('${p.id}', event)" title="Cambiar color"></div>
+    <input class="project-name-input" value="${escapeHTML(p.name)}" onchange="updateProject('${p.id}', 'name', this.value)">
+    <select class="project-type-select" onchange="updateProject('${p.id}', 'type', this.value)">
+      <option value="recurrente" ${p.type==='recurrente'?'selected':''}>Recurrente</option>
+      <option value="proyecto" ${p.type==='proyecto'?'selected':''}>Proyecto</option>
+    </select>
+    ${parentCell}
+    <div class="project-stats">${count} act.<br>${jornales} jorn.</div>
+    <button class="danger mini-btn" onclick="deleteProject('${p.id}')">×</button>
+  </div>`;
+}
+
+function setProjectParent(id, parentId) {
+  const p = getProject(id);
+  if (!p) return;
+  if (parentId && getChildProjects(id).length > 0) {
+    alert('Este proyecto ya tiene sub-proyectos, no puede volverse hijo de otro (máximo 2 niveles).');
+    renderProjectsList();
+    return;
+  }
+  p.parentId = parentId || null;
+  markProjectsDirty();
+  renderProjectsList();
 }
 
 function cycleProjectColor(id, event) {
@@ -1544,6 +1929,63 @@ function deleteProject(id) {
 }
 
 // ============ EXPORT / IMPORT ============
+function csvEscape(v) {
+  const s = String(v ?? '');
+  if (/[",\n;]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+  return s;
+}
+
+function archiveTerminadas() {
+  const done = state.activities.filter(a => a.status === 'terminado');
+  if (done.length === 0) { alert('No hay tareas terminadas para archivar.'); return; }
+  if (!confirm(`Vas a archivar ${done.length} tarea(s) terminada(s).\n\nSe descargará un archivo CSV con toda su información y luego se ELIMINARÁN del tablero.\n\n¿Continuar?`)) return;
+
+  // Build CSV
+  const headers = ['Nombre','Proyecto','Estado','Prioridad','Lotes','Jornales','Personas','Duración (días)','Duración editada','Contratada externo','Costo insumos (COP)','Insumos (detalle)','Detalles','Fecha planeada','Creada','Último cambio de estado'];
+  const rows = done.map(a => {
+    const proj = a.projectId ? projectDisplayName(a.projectId) : 'Sin proyecto';
+    const lotsStr = (a.lots||[]).join(' | ');
+    const matStr = (a.materials||[]).map(m => {
+      const t = (Number(m.quantity)||0)*(Number(m.unitCost)||0);
+      return `${m.name}: ${m.quantity||0} ${m.unit||''} x ${fmtCOP(m.unitCost||0)} = ${fmtCOP(t)}`;
+    }).join(' || ');
+    return [
+      a.name || '',
+      proj,
+      'Terminado',
+      `${a.priority||3} (${PRIORITY_LABELS[a.priority||3]})`,
+      lotsStr,
+      a.external ? '' : (a.jornales||0),
+      a.external ? '' : (a.personas||0),
+      activityDuration(a).toFixed(1),
+      isDurationEdited(a) ? 'Sí' : 'No',
+      a.external ? 'Sí' : 'No',
+      activityCost(a),
+      matStr,
+      (a.details||'').replace(/\n/g,' '),
+      a.fechaPlaneada || '',
+      a.createdAt ? new Date(a.createdAt).toLocaleString('es-CO') : '',
+      a.statusChangedAt ? new Date(a.statusChangedAt).toLocaleString('es-CO') : '',
+    ].map(csvEscape).join(',');
+  });
+  const csv = '\uFEFF' + headers.map(csvEscape).join(',') + '\n' + rows.join('\n');
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  const stamp = new Date().toISOString().slice(0,10);
+  link.href = url;
+  link.download = `finca-el-rocio-archivo-terminadas-${stamp}.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
+
+  // Delete the archived activities
+  const archivedIds = new Set(done.map(a => a.id));
+  state.activities = state.activities.filter(a => !archivedIds.has(a.id));
+  saveState();
+  renderBoard();
+}
+
 function exportData() {
   const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -1587,6 +2029,8 @@ function attachDirtyListeners() {
 
 // ============ INIT ============
 loadState();
+try { compactMode = localStorage.getItem('finca-density') === '1'; } catch(e){}
+document.getElementById('densityBtn').textContent = compactMode ? '▤ Fichas: Compactas' : '▭ Fichas: Estándar';
 renderFilters();
 renderBoard();
 attachDirtyListeners();
