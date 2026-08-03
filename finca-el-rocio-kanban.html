@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finca El Rocío — Control de Actividades</title>
+<meta name="theme-color" content="#3B5D2C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Finca El Rocío">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="Finca El Rocío">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%233B5D2C'/%3E%3Ctext x='16' y='24' font-family='Georgia,serif' font-size='22' font-weight='600' fill='%23F8F7F0' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='36' fill='%233B5D2C'/%3E%3Ctext x='90' y='130' font-family='Georgia,serif' font-size='120' font-weight='600' fill='%23F8F7F0' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #EDEEE6;
+  --bg-deep: #E4E6DA;
+  --ink: #1A2018;
+  --ink-soft: #3F4438;
+  --meta: #6B6A5D;
+  --primary: #3B5D2C;
+  --primary-hover: #2E4A22;
+  --primary-soft: #E5EBDC;
+  --card: #F8F7F0;
+  --card-alt: #FDFCF6;
+  --amber: #C9782A;
+  --amber-soft: #F4E2CE;
+  --terminado: #547A3F;
+  --danger: #A63D2A;
+  --hairline: #C5C3B4;
+  --hairline-soft: #DEDBCB;
+  --prio-1: #A63D2A;
+  --prio-2: #C9782A;
+  --prio-3: #8B6F2A;
+  --prio-4: #547A3F;
+  --prio-5: #7B7A6E;
+  --shadow-sm: 0 1px 2px rgba(26, 32, 24, 0.05);
+  --shadow-md: 0 1px 3px rgba(26, 32, 24, 0.06), 0 4px 14px rgba(26, 32, 24, 0.06);
+  --shadow-lg: 0 8px 32px rgba(26, 32, 24, 0.12);
+  --radius: 4px;
+  --radius-lg: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+.serif { font-family: 'Fraunces', Georgia, serif; }
+
+.topbar {
+  border-bottom: 1px solid var(--hairline);
+  background: rgba(237, 238, 230, 0.92);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(8px);
+}
+.topbar-inner { max-width: 1600px; margin: 0 auto; padding: 18px 24px 14px; }
+.brand { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.brand-left { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+.brand h1 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 30px;
+  letter-spacing: -0.02em;
+  font-variation-settings: "opsz" 96;
+  color: var(--ink);
+  line-height: 1;
+}
+.brand .subtitle {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--meta);
+  font-weight: 500;
+}
+.brand-right { display: flex; align-items: center; gap: 10px; }
+
+/* Sync pill */
+.sync-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border: 1px solid var(--hairline);
+  border-radius: 20px;
+  background: var(--card-alt);
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--meta);
+  transition: all 0.15s;
+}
+.sync-pill:hover { border-color: var(--ink-soft); }
+.sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--meta); flex-shrink: 0; }
+.sync-pill.synced .sync-dot { background: var(--terminado); }
+.sync-pill.synced { color: var(--terminado); border-color: #B5CDA7; background: #EEF3E4; }
+.sync-pill.saving .sync-dot { background: var(--amber); animation: syncpulse 1s ease-in-out infinite; }
+.sync-pill.saving { color: var(--amber); }
+.sync-pill.reconnect .sync-dot { background: var(--amber); }
+.sync-pill.reconnect { color: var(--amber); border-color: var(--amber); background: var(--amber-soft); }
+.sync-pill.error .sync-dot { background: var(--danger); }
+.sync-pill.error { color: var(--danger); border-color: var(--danger); }
+.sync-pill.unsupported { color: var(--meta); opacity: 0.7; }
+@keyframes syncpulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0;
+  margin-top: 18px;
+  border-top: 1px solid var(--hairline-soft);
+  border-bottom: 1px solid var(--hairline-soft);
+}
+.stat { padding: 12px 16px; border-right: 1px solid var(--hairline-soft); display: flex; flex-direction: column; gap: 2px; }
+.stat:last-child { border-right: none; }
+.stat-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--meta); font-weight: 500; }
+.stat-value {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 500;
+  font-variation-settings: "opsz" 48;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.stat-value .unit { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 400; color: var(--meta); margin-left: 3px; letter-spacing: 0; }
+
+.workload { max-width: 1600px; margin: 0 auto; padding: 14px 24px 4px; }
+.workload-inner {
+  background: var(--card-alt);
+  border: 1px solid var(--hairline-soft);
+  border-radius: var(--radius-lg);
+  padding: 12px 16px 14px;
+}
+.workload-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+.workload-title {
+  font-family: 'Fraunces', serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  font-variation-settings: "opsz" 24;
+}
+.workload-legend { display: flex; gap: 12px; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--meta); font-weight: 500; }
+.legend-dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
+.workload-body { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.week-col { border: 1px solid var(--hairline-soft); border-radius: var(--radius); padding: 8px 10px 10px; background: var(--card); position: relative; }
+.week-col.current { background: var(--primary-soft); border-color: var(--primary); }
+.week-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.week-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--meta); font-weight: 600; }
+.week-col.current .week-label { color: var(--primary); }
+.week-dates { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--meta); }
+.week-chart { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 6px 0 2px; margin-top: 4px; }
+.week-bar-col { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
+.week-bar-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: var(--ink); min-height: 14px; letter-spacing: -0.02em; white-space: nowrap; text-align: center; }
+.week-col.current .week-bar-label { color: var(--primary); }
+.week-bar-track { width: 100%; height: 68px; display: flex; align-items: flex-end; background: var(--bg-deep); border-radius: 3px; padding: 2px; position: relative; border: 1px solid var(--hairline-soft); }
+.week-col.current .week-bar-track { background: rgba(59, 93, 44, 0.08); border-color: rgba(59, 93, 44, 0.2); }
+.week-bar { width: 100%; min-height: 2px; border-radius: 2px 2px 0 0; transition: height 0.35s ease; }
+.bar-jornales { background: var(--primary); }
+.bar-cost { background: var(--amber); }
+.week-bar-caption { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--meta); letter-spacing: 0.03em; font-weight: 600; }
+.week-count { position: absolute; top: 6px; right: 8px; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--meta); background: var(--bg); padding: 1px 5px; border-radius: 3px; }
+.chart-empty { text-align: center; padding: 18px 10px; color: var(--meta); font-size: 11px; font-style: italic; }
+
+.toolbar { max-width: 1600px; margin: 0 auto; padding: 14px 24px 10px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.toolbar .spacer { flex: 1; }
+.toolbar-group { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+button, .btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid var(--hairline);
+  background: var(--card-alt);
+  color: var(--ink);
+  padding: 7px 14px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  letter-spacing: -0.01em;
+}
+button:hover, .btn:hover { background: var(--card); border-color: var(--ink-soft); }
+button.primary, .btn.primary { background: var(--primary); color: #F8F7F0; border-color: var(--primary); }
+button.primary:hover, .btn.primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+button.ghost { background: transparent; border-color: transparent; color: var(--ink-soft); }
+button.ghost:hover { background: var(--bg-deep); border-color: transparent; }
+button.danger { color: var(--danger); border-color: transparent; background: transparent; }
+button.danger:hover { background: #F5E1DC; border-color: transparent; }
+
+select, input, textarea {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  border: 1px solid var(--hairline);
+  background: var(--card-alt);
+  color: var(--ink);
+  padding: 7px 10px;
+  border-radius: var(--radius);
+  outline: none;
+  transition: border-color 0.12s ease;
+}
+select:focus, input:focus, textarea:focus { border-color: var(--primary); }
+select { padding-right: 24px; }
+
+.board-wrap { max-width: 1600px; margin: 0 auto; padding: 4px 24px 40px; overflow-x: auto; }
+.board { display: grid; grid-template-columns: repeat(5, minmax(280px, 1fr)); gap: 14px; min-width: 1400px; }
+
+.column {
+  background: var(--bg-deep);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--hairline-soft);
+  display: flex;
+  flex-direction: column;
+  min-height: 60vh;
+}
+.column.drag-over { background: var(--primary-soft); border-color: var(--primary); }
+.column.espera { background: #F4EFE4; }
+.column.espera.drag-over { background: var(--amber-soft); border-color: var(--amber); }
+.column.terminado { background: #E8ECDF; }
+.column.terminado.drag-over { background: var(--primary-soft); border-color: var(--terminado); }
+
+.col-header { padding: 14px 14px 10px; border-bottom: 1px solid var(--hairline-soft); }
+.col-title-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.col-title { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 500; letter-spacing: -0.005em; color: var(--ink); font-variation-settings: "opsz" 24; }
+.col-count { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--meta); background: var(--bg); padding: 2px 6px; border-radius: 3px; border: 1px solid var(--hairline-soft); }
+.col-meta { display: flex; gap: 10px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--meta); letter-spacing: 0.02em; }
+.col-meta span strong { color: var(--ink); font-weight: 600; }
+
+.col-body {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  overflow-y: auto;
+  max-height: calc(100vh - 240px);
+}
+.col-body::-webkit-scrollbar { width: 6px; }
+.col-body::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: 3px; }
+
+.col-empty { text-align: center; padding: 24px 10px; color: var(--meta); font-size: 12px; font-style: italic; border: 1px dashed var(--hairline); border-radius: var(--radius); }
+
+.card {
+  background: var(--card-alt);
+  border-radius: var(--radius);
+  border: 1px solid var(--hairline-soft);
+  padding: 0;
+  cursor: grab;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+  overflow: hidden;
+  position: relative;
+}
+.card:hover { box-shadow: var(--shadow-md); border-color: var(--hairline); }
+.card.dragging { opacity: 0.4; }
+.card-thread { height: 3px; background: var(--primary); width: 100%; }
+.card-body { padding: 10px 12px 12px; position: relative; }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 4px; }
+.card-project-wrap { flex: 1; min-width: 0; }
+.card-project { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--meta); font-weight: 500; display: flex; align-items: center; gap: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-project .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); display: inline-block; flex-shrink: 0; }
+
+.priority-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  color: white;
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 20px;
+  font-variation-settings: "opsz" 48;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  position: relative;
+}
+.priority-badge::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: -14px;
+  right: 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--meta);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.priority-badge.p1 { background: var(--prio-1); }
+.priority-badge.p2 { background: var(--prio-2); }
+.priority-badge.p3 { background: var(--prio-3); }
+.priority-badge.p4 { background: var(--prio-4); }
+.priority-badge.p5 { background: var(--prio-5); }
+
+.card-title { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 500; line-height: 1.25; color: var(--ink); margin: 6px 0 8px; font-variation-settings: "opsz" 24; letter-spacing: -0.005em; }
+.card-lots { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
+.lot-chip { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 2px 6px; background: var(--bg); border: 1px solid var(--hairline-soft); border-radius: 3px; color: var(--ink-soft); font-weight: 500; letter-spacing: 0.01em; }
+.lot-chip.more { background: transparent; border-color: transparent; color: var(--meta); padding-left: 0; }
+.card-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 8px 0; border-top: 1px solid var(--hairline-soft); border-bottom: 1px solid var(--hairline-soft); margin-bottom: 8px; }
+.metric { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.metric-label { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--meta); font-weight: 500; }
+.metric-value { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; color: var(--ink); margin-top: 1px; }
+.card-footer { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.card-cost { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; color: var(--ink); }
+.card-cost .unit { font-size: 9px; color: var(--meta); font-weight: 400; margin-left: 2px; }
+.card-date { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--meta); }
+.card-date.planned { color: var(--primary); font-weight: 600; }
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 32, 24, 0.35);
+  backdrop-filter: blur(2px);
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  z-index: 100;
+  padding: 40px 20px;
+  overflow-y: auto;
+}
+.modal-backdrop.open { display: flex; }
+.modal {
+  background: var(--card-alt);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--hairline);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 640px;
+  overflow: hidden;
+  animation: modalIn 0.15s ease-out;
+}
+.modal.wide { max-width: 820px; }
+@keyframes modalIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+.modal-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--hairline-soft); display: flex; justify-content: space-between; align-items: baseline; }
+.modal-title { font-family: 'Fraunces', serif; font-weight: 500; font-size: 22px; letter-spacing: -0.01em; font-variation-settings: "opsz" 48; color: var(--ink); }
+.modal-eyebrow { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--meta); font-weight: 500; margin-bottom: 4px; }
+.modal-close { background: transparent; border: none; color: var(--meta); font-size: 22px; cursor: pointer; padding: 2px 8px; border-radius: 4px; line-height: 1; }
+.modal-close:hover { color: var(--danger); background: var(--bg-deep); }
+
+.modal-body { padding: 20px 24px; max-height: 70vh; overflow-y: auto; }
+.modal-footer { padding: 14px 24px; border-top: 1px solid var(--hairline-soft); display: flex; justify-content: space-between; align-items: center; gap: 10px; background: var(--bg-deep); }
+.footer-actions { display: flex; gap: 8px; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+.form-row { display: flex; flex-direction: column; gap: 5px; }
+.form-row.full { grid-column: 1 / -1; }
+.form-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--meta); font-weight: 500; }
+.form-hint { font-size: 11px; color: var(--meta); margin-top: 2px; font-style: italic; }
+.form-row input, .form-row select, .form-row textarea { width: 100%; }
+textarea { resize: vertical; min-height: 60px; font-family: 'Inter', sans-serif; }
+
+.prio-picker { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+.prio-opt { padding: 8px 4px; border: 1px solid var(--hairline); background: var(--card-alt); cursor: pointer; border-radius: var(--radius); text-align: center; transition: all 0.12s; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.prio-opt:hover { border-color: var(--ink-soft); }
+.prio-opt.selected { color: white; border-color: transparent; }
+.prio-opt.selected.p1 { background: var(--prio-1); }
+.prio-opt.selected.p2 { background: var(--prio-2); }
+.prio-opt.selected.p3 { background: var(--prio-3); }
+.prio-opt.selected.p4 { background: var(--prio-4); }
+.prio-opt.selected.p5 { background: var(--prio-5); }
+.prio-opt .num { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; line-height: 1; }
+.prio-opt .lbl { font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; }
+
+.lot-picker { border: 1px solid var(--hairline); border-radius: var(--radius); padding: 10px; background: var(--card); max-height: 220px; overflow-y: auto; }
+.lot-module { margin-bottom: 10px; }
+.lot-module:last-child { margin-bottom: 0; }
+.lot-module-title { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--meta); font-weight: 600; margin-bottom: 4px; padding-bottom: 3px; border-bottom: 1px dashed var(--hairline-soft); }
+.lot-options { display: flex; flex-wrap: wrap; gap: 4px; }
+.lot-opt { display: inline-flex; align-items: center; gap: 5px; padding: 4px 8px; border: 1px solid var(--hairline); border-radius: 3px; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-soft); background: var(--card-alt); transition: all 0.12s; user-select: none; }
+.lot-opt:hover { border-color: var(--primary); }
+.lot-opt.selected { background: var(--primary); color: var(--card-alt); border-color: var(--primary); }
+.lot-opt .lot-area { font-size: 9px; opacity: 0.7; font-weight: 400; }
+.lot-opt.selected .lot-area { opacity: 0.9; }
+
+.materials-list { display: flex; flex-direction: column; gap: 10px; }
+.material-row { padding: 8px 10px; background: var(--card); border: 1px solid var(--hairline-soft); border-radius: var(--radius); display: grid; grid-template-columns: 1fr auto; gap: 6px 8px; align-items: center; }
+.mat-name-row { display: flex; gap: 6px; align-items: center; }
+.mat-name-row input { flex: 1; }
+.mat-detail-row { grid-column: 1 / -1; display: grid; grid-template-columns: 90px 90px 130px 1fr; gap: 6px; align-items: end; }
+.mat-field { display: flex; flex-direction: column; gap: 2px; }
+.mat-field label { font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--meta); font-weight: 600; }
+.mat-field input { padding: 5px 8px; font-size: 12px; }
+.mat-total { padding: 5px 8px; background: var(--primary-soft); border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; color: var(--primary); text-align: right; }
+.mat-remove { padding: 4px 8px; font-size: 12px; color: var(--meta); background: transparent; border: none; border-radius: 3px; cursor: pointer; }
+.mat-remove:hover { background: #F5E1DC; color: var(--danger); }
+.materials-total { display: flex; justify-content: space-between; padding: 10px 12px; background: var(--bg-deep); border-radius: var(--radius); margin-top: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+.materials-total strong { color: var(--ink); font-weight: 700; }
+
+.calc-box { padding: 10px 12px; background: var(--primary-soft); border-radius: var(--radius); font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink-soft); }
+.calc-box strong { color: var(--primary); font-size: 14px; }
+
+.section-label { font-family: 'Fraunces', serif; font-size: 13px; font-weight: 500; color: var(--ink); margin: 18px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--hairline-soft); font-variation-settings: "opsz" 24; }
+.section-label:first-child { margin-top: 0; }
+
+.projects-list { display: flex; flex-direction: column; gap: 6px; }
+.project-item { display: grid; grid-template-columns: 24px 1fr 100px 60px 40px; gap: 10px; align-items: center; padding: 8px 10px; background: var(--card); border: 1px solid var(--hairline-soft); border-radius: var(--radius); }
+.project-swatch { width: 16px; height: 16px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.1); cursor: pointer; }
+.project-name-input { padding: 5px 8px; font-size: 13px; border: 1px solid transparent; background: transparent; }
+.project-name-input:focus { border-color: var(--hairline); background: var(--card-alt); }
+.project-type-select { padding: 5px 8px; font-size: 11px; border: 1px solid transparent; background: transparent; }
+.project-stats { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--meta); text-align: right; }
+.mini-btn { padding: 6px 8px; font-size: 11px; border-radius: 3px; }
+
+.dirty-indicator { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--amber); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding-left: 8px; display: none; }
+.dirty-indicator.on { display: inline; }
+
+/* Cloud modal specific */
+.cloud-status-box { padding: 12px 14px; border-radius: var(--radius); margin-bottom: 14px; border: 1px solid var(--hairline-soft); background: var(--card); }
+.cloud-status-box.ok { background: #EEF3E4; border-color: #B5CDA7; }
+.cloud-status-box.warn { background: var(--amber-soft); border-color: var(--amber); }
+.cloud-status-box.err { background: #F5E1DC; border-color: var(--danger); }
+.cloud-status-box h4 { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+.cloud-status-box .stat-line { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-soft); margin-top: 4px; }
+.cloud-help { font-size: 12px; color: var(--ink-soft); line-height: 1.55; padding: 10px 12px; background: var(--card); border-radius: var(--radius); border: 1px solid var(--hairline-soft); margin-bottom: 14px; }
+.cloud-help strong { color: var(--ink); }
+.cloud-help code { font-family: 'JetBrains Mono', monospace; font-size: 11px; background: var(--bg-deep); padding: 1px 4px; border-radius: 2px; }
+.cloud-actions { display: flex; flex-direction: column; gap: 8px; }
+.cloud-action-btn { text-align: left; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; }
+.cloud-action-btn .desc { font-size: 11px; color: var(--meta); font-weight: 400; margin-top: 2px; }
+.cloud-action-btn > div { display: flex; flex-direction: column; align-items: flex-start; }
+
+@media (max-width: 768px) {
+  .form-grid, .form-grid.three { grid-template-columns: 1fr; }
+  .brand h1 { font-size: 24px; }
+  .stat { padding: 10px 12px; }
+  .stat-value { font-size: 18px; }
+  .toolbar { padding: 12px 16px; }
+  .board-wrap { padding: 6px 16px 30px; }
+  .mat-detail-row { grid-template-columns: 1fr 1fr; }
+  .workload-body { grid-template-columns: repeat(2, 1fr); }
+}
+
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-left">
+        <h1 class="serif">Finca El Rocío</h1>
+        <span class="subtitle">Control de Actividades</span>
+      </div>
+      <div class="brand-right">
+        <button class="sync-pill" id="syncPill" onclick="openCloudModal()">
+          <span class="sync-dot"></span>
+          <span class="sync-text">Solo local</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="summary" id="summary">
+      <div class="stat"><div class="stat-label">Actividades activas</div><div class="stat-value" id="statActive">0</div></div>
+      <div class="stat"><div class="stat-label">Jornales pendientes</div><div class="stat-value" id="statJornales">0</div></div>
+      <div class="stat"><div class="stat-label">Costo estimado activo</div><div class="stat-value" id="statCost">$ 0<span class="unit">COP</span></div></div>
+      <div class="stat"><div class="stat-label">Lotes intervenidos</div><div class="stat-value" id="statLots">0 <span class="unit">de 20</span></div></div>
+      <div class="stat"><div class="stat-label">Terminadas</div><div class="stat-value" id="statDone">0</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="workload">
+  <div class="workload-inner">
+    <div class="workload-header">
+      <div class="workload-title serif">Carga proyectada · semana actual y próximas 4</div>
+      <div class="workload-legend">
+        <span><span class="legend-dot" style="background: var(--primary)"></span>Jornales</span>
+        <span><span class="legend-dot" style="background: var(--amber)"></span>Costo</span>
+      </div>
+    </div>
+    <div class="workload-body" id="workloadBody"></div>
+  </div>
+</div>
+
+<div class="toolbar">
+  <button class="primary" onclick="openActivityModal()">+ Nueva actividad</button>
+  <button onclick="openProjectsModal()">Proyectos</button>
+  <div class="toolbar-group">
+    <select id="filterProject" onchange="renderBoard()"><option value="">Todos los proyectos</option></select>
+    <select id="filterLot" onchange="renderBoard()"><option value="">Todos los lotes</option></select>
+  </div>
+  <div class="spacer"></div>
+  <div class="toolbar-group">
+    <button class="ghost" onclick="exportData()">Descargar copia</button>
+    <button class="ghost" onclick="document.getElementById('importInput').click()">Importar</button>
+    <input type="file" id="importInput" accept=".json" style="display:none" onchange="importData(event)">
+  </div>
+</div>
+
+<div class="board-wrap">
+  <div class="board" id="board"></div>
+</div>
+
+<!-- ACTIVITY MODAL -->
+<div class="modal-backdrop" id="activityModal">
+  <div class="modal wide">
+    <div class="modal-header">
+      <div>
+        <div class="modal-eyebrow" id="activityEyebrow">Nueva actividad<span class="dirty-indicator" id="activityDirty">· Sin guardar</span></div>
+        <div class="modal-title serif" id="activityTitle">Registrar actividad</div>
+      </div>
+      <button class="modal-close" onclick="requestCloseActivity()" title="Cerrar">×</button>
+    </div>
+    <div class="modal-body" id="activityBody">
+      <div class="section-label">Identificación</div>
+      <div class="form-grid">
+        <div class="form-row full"><label class="form-label">Nombre de la actividad</label><input type="text" id="actName" placeholder="Ej. Fertilización edáfica lote 3"></div>
+        <div class="form-row"><label class="form-label">Proyecto asociado</label><select id="actProject"></select></div>
+        <div class="form-row"><label class="form-label">Estado</label><select id="actStatus"><option value="ideado">Ideado</option><option value="planeado">Planeado</option><option value="ejecucion">En ejecución</option><option value="espera">En espera</option><option value="terminado">Terminado</option></select></div>
+        <div class="form-row"><label class="form-label">Fecha planeada de inicio</label><input type="date" id="actFechaPlaneada"><div class="form-hint">Se usa para la carga proyectada. Opcional en "Ideado".</div></div>
+        <div class="form-row"><label class="form-label">Prioridad</label>
+          <div class="prio-picker" id="prioPicker">
+            <div class="prio-opt p1" data-prio="1" onclick="selectPriority(1)"><span class="num">1</span><span class="lbl">Crítica</span></div>
+            <div class="prio-opt p2" data-prio="2" onclick="selectPriority(2)"><span class="num">2</span><span class="lbl">Alta</span></div>
+            <div class="prio-opt p3" data-prio="3" onclick="selectPriority(3)"><span class="num">3</span><span class="lbl">Media</span></div>
+            <div class="prio-opt p4" data-prio="4" onclick="selectPriority(4)"><span class="num">4</span><span class="lbl">Baja</span></div>
+            <div class="prio-opt p5" data-prio="5" onclick="selectPriority(5)"><span class="num">5</span><span class="lbl">Opcional</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">Lotes involucrados</div>
+      <div class="lot-picker" id="lotPicker"></div>
+
+      <div class="section-label">Recursos y duración</div>
+      <div class="form-grid three">
+        <div class="form-row"><label class="form-label">Jornales estimados</label><input type="number" id="actJornales" min="0" step="0.5" value="0" oninput="updateDuration()"></div>
+        <div class="form-row"><label class="form-label">Personas asignadas</label><input type="number" id="actPersonas" min="1" step="1" value="1" oninput="updateDuration()"></div>
+        <div class="form-row"><label class="form-label">Duración calculada</label><div class="calc-box" id="durationBox"><strong>0.0</strong> días</div></div>
+      </div>
+
+      <div class="section-label">Insumos y materiales</div>
+      <div class="materials-list" id="materialsList"></div>
+      <button class="mini-btn" style="margin-top: 10px;" onclick="addMaterialRow()">+ Agregar insumo</button>
+      <div class="materials-total"><span>Costo estimado total de insumos</span><strong id="materialsTotal">$ 0 COP</strong></div>
+
+      <div class="section-label">Detalles adicionales</div>
+      <textarea id="actDetails" placeholder="Notas técnicas, condiciones específicas, contactos, referencias..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="danger hidden" id="deleteActivityBtn" onclick="deleteActivity()">Eliminar actividad</button>
+      <div class="spacer"></div>
+      <div class="footer-actions">
+        <button onclick="requestCloseActivity()">Cancelar</button>
+        <button class="primary" onclick="saveActivity()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECTS MODAL -->
+<div class="modal-backdrop" id="projectsModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-eyebrow">Programas y proyectos<span class="dirty-indicator" id="projectsDirty">· Sin guardar</span></div>
+        <div class="modal-title serif">Gestión de proyectos</div>
+      </div>
+      <button class="modal-close" onclick="requestCloseProjects()" title="Cerrar">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="color: var(--meta); font-size: 12px; margin-bottom: 14px;">Los <strong>programas recurrentes</strong> agrupan labores que se repiten cada ciclo. Los <strong>proyectos puntuales</strong> tienen inicio y fin.</p>
+      <div class="projects-list" id="projectsList"></div>
+      <button class="primary" style="margin-top: 14px;" onclick="addProject()">+ Nuevo proyecto</button>
+    </div>
+    <div class="modal-footer">
+      <div class="spacer"></div>
+      <button class="primary" onclick="requestCloseProjects()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- CLOUD SYNC MODAL -->
+<div class="modal-backdrop" id="cloudModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-eyebrow">Sincronización</div>
+        <div class="modal-title serif">Guardado en iCloud / OneDrive</div>
+      </div>
+      <button class="modal-close" onclick="closeCloudModal()" title="Cerrar">×</button>
+    </div>
+    <div class="modal-body" id="cloudModalBody"></div>
+    <div class="modal-footer">
+      <div class="spacer"></div>
+      <button onclick="closeCloudModal()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============ DATA ============
+const LOTS = [
+  { id: 'R-1-PLHUGO', name: 'Plan de Hugo', modulo: 1, area: 1.91 },
+  { id: 'R-1-FDHUGO', name: 'Falda de Hugo', modulo: 1, area: 2.05 },
+  { id: 'R-1-TANQUE', name: 'Tanques', modulo: 1, area: 0.91 },
+  { id: 'R-2-POTMED', name: 'Potrero del Medio', modulo: 2, area: 2.32 },
+  { id: 'R-2-MACKEN', name: 'Makena', modulo: 2, area: 0.96 },
+  { id: 'R-2-BATEAX', name: 'Batea', modulo: 2, area: 1.66 },
+  { id: 'R-2-RASTRO', name: 'Rastrojo', modulo: 2, area: 0.91 },
+  { id: 'R-3-VAGONX', name: 'Vagón', modulo: 3, area: 1.55 },
+  { id: 'R-3-RANCHO', name: 'Rancho', modulo: 3, area: 0.93 },
+  { id: 'R-3-GUAYAB', name: 'Guayabos', modulo: 3, area: 3.38 },
+  { id: 'R-4-MANDAR', name: 'Mandarinos', modulo: 4, area: 0.87 },
+  { id: 'R-4-AGUACA', name: 'Aguacatales', modulo: 4, area: 1.03 },
+  { id: 'R-4-CANIAL', name: 'Cañal', modulo: 4, area: 0.88 },
+  { id: 'R-4-NARANJ', name: 'Naranjos', modulo: 4, area: 1.37 },
+  { id: 'R-4-SILOXX', name: 'Silo', modulo: 4, area: 0.41 },
+  { id: 'R-4-TRASCA', name: 'Tras Casa', modulo: 4, area: 1.02 },
+  { id: 'R-5-HERRAD', name: 'Herradura', modulo: 5, area: 1.68 },
+  { id: 'R-5-FRENCA', name: 'Frente a Casa', modulo: 5, area: 1.00 },
+  { id: 'R-5-PASCOR', name: 'Pasto de Corte', modulo: 5, area: 0.92 },
+  { id: 'R-5-CASPEQ', name: 'Casa Pequeña', modulo: 5, area: 2.58 },
+];
+
+const PROJECT_COLORS = ['#3B5D2C','#8B6F2A','#C9782A','#A63D2A','#5B4A8A','#2A6E7E','#7A6E3B','#4A6B3E','#6B4530','#7D5A9F'];
+const COLUMNS = [
+  { id: 'ideado', title: 'Ideado' },
+  { id: 'planeado', title: 'Planeado' },
+  { id: 'ejecucion', title: 'En ejecución' },
+  { id: 'espera', title: 'En espera' },
+  { id: 'terminado', title: 'Terminado' },
+];
+const PRIORITY_LABELS = { 1:'Crítica',2:'Alta',3:'Media',4:'Baja',5:'Opcional' };
+const STORAGE_KEY = 'finca-el-rocio-kanban-v3';
+
+let state = { projects: [], activities: [], _syncedAt: null };
+let editingActivityId = null;
+let currentPriority = 3;
+let activityDirty = false;
+let projectsDirty = false;
+let projectsSnapshot = null;
+
+// ============ CLOUD SYNC ============
+const DB_NAME = 'finca-cloud-sync';
+const DB_STORE = 'handles';
+const HANDLE_KEY = 'cloudFile';
+const SYNC_SUPPORTED = 'showSaveFilePicker' in window;
+
+let cloudHandle = null;
+let syncEnabled = false;
+let syncTimer = null;
+let syncState = 'local'; // local | synced | saving | reconnect | error | unsupported
+
+function openHandleDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = () => { req.result.createObjectStore(DB_STORE); };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function idbSet(key, value) {
+  const db = await openHandleDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(DB_STORE, 'readwrite');
+    tx.objectStore(DB_STORE).put(value, key);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function idbGet(key) {
+  const db = await openHandleDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(DB_STORE, 'readonly');
+    const req = tx.objectStore(DB_STORE).get(key);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function idbDel(key) {
+  const db = await openHandleDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(DB_STORE, 'readwrite');
+    tx.objectStore(DB_STORE).delete(key);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+function setSyncState(s, subtext) {
+  syncState = s;
+  const pill = document.getElementById('syncPill');
+  pill.className = 'sync-pill ' + s;
+  const map = {
+    local: 'Solo local',
+    synced: 'Sincronizado',
+    saving: 'Guardando…',
+    reconnect: 'Reconectar',
+    error: 'Error de sync',
+    unsupported: 'No soportado'
+  };
+  pill.querySelector('.sync-text').textContent = subtext || map[s];
+}
+
+async function initCloudSync() {
+  if (!SYNC_SUPPORTED) {
+    setSyncState('unsupported');
+    return;
+  }
+  try {
+    const handle = await idbGet(HANDLE_KEY);
+    if (!handle) { setSyncState('local'); return; }
+    cloudHandle = handle;
+    const perm = await handle.queryPermission({ mode: 'readwrite' });
+    if (perm === 'granted') {
+      syncEnabled = true;
+      setSyncState('synced');
+      await pullFromCloud(true);
+    } else {
+      setSyncState('reconnect');
+    }
+  } catch (e) {
+    console.warn('Cloud init error', e);
+    setSyncState('local');
+  }
+}
+
+async function pickCloudFile() {
+  if (!SYNC_SUPPORTED) {
+    alert('Este navegador no soporta la API. Usa Chrome, Edge, o Brave en Mac/Windows.');
+    return;
+  }
+  try {
+    const handle = await window.showSaveFilePicker({
+      suggestedName: 'finca-el-rocio.json',
+      types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
+    });
+    await idbSet(HANDLE_KEY, handle);
+    cloudHandle = handle;
+    syncEnabled = true;
+
+    // If the file has existing content, offer to load it instead of overwriting
+    try {
+      const file = await handle.getFile();
+      if (file.size > 0) {
+        const text = await file.text();
+        if (text.trim()) {
+          const cloudData = JSON.parse(text);
+          if (cloudData.activities && cloudData.projects) {
+            const useCloud = confirm(
+              `El archivo ya tiene datos:\n· ${cloudData.projects.length} proyecto(s)\n· ${cloudData.activities.length} actividad(es)\n\n` +
+              `OK = Cargar datos del archivo (descarta lo que hay en este navegador)\n` +
+              `Cancelar = Sobrescribir el archivo con los datos actuales del navegador`
+            );
+            if (useCloud) {
+              state = cloudData;
+              if (!state._syncedAt) state._syncedAt = new Date().toISOString();
+              saveLocal();
+              renderFilters();
+              renderBoard();
+              setSyncState('synced');
+              renderCloudModal();
+              return;
+            }
+          }
+        }
+      }
+    } catch (e) { /* new file, no existing content */ }
+
+    await pushToCloud();
+    renderCloudModal();
+  } catch (e) {
+    if (e.name !== 'AbortError') alert('Error al vincular: ' + e.message);
+  }
+}
+
+async function reconnectCloud() {
+  if (!cloudHandle) return;
+  try {
+    const perm = await cloudHandle.requestPermission({ mode: 'readwrite' });
+    if (perm === 'granted') {
+      syncEnabled = true;
+      setSyncState('synced');
+      await pullFromCloud();
+      renderCloudModal();
+    } else {
+      alert('Permiso denegado. No se puede sincronizar sin permiso de lectura/escritura.');
+    }
+  } catch (e) {
+    alert('Error: ' + e.message);
+  }
+}
+
+async function unlinkCloud() {
+  if (!confirm('Al desvincular, los cambios ya no se guardarán en el archivo de iCloud/OneDrive. Los datos actuales quedan en el navegador. ¿Continuar?')) return;
+  await idbDel(HANDLE_KEY);
+  cloudHandle = null;
+  syncEnabled = false;
+  setSyncState('local');
+  renderCloudModal();
+}
+
+async function pushToCloud() {
+  if (!syncEnabled || !cloudHandle) return;
+  try {
+    setSyncState('saving');
+    const perm = await cloudHandle.queryPermission({ mode: 'readwrite' });
+    if (perm !== 'granted') { setSyncState('reconnect'); return; }
+    const writable = await cloudHandle.createWritable();
+    state._syncedAt = new Date().toISOString();
+    await writable.write(JSON.stringify(state, null, 2));
+    await writable.close();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    setSyncState('synced');
+  } catch (e) {
+    console.error('Push failed', e);
+    setSyncState('error');
+  }
+}
+
+async function pullFromCloud(silent) {
+  if (!cloudHandle) return;
+  try {
+    const file = await cloudHandle.getFile();
+    if (file.size === 0) return;
+    const text = await file.text();
+    if (!text.trim()) return;
+    const cloudData = JSON.parse(text);
+    if (!cloudData.activities || !cloudData.projects) return;
+    const localTime = state._syncedAt ? new Date(state._syncedAt).getTime() : 0;
+    const cloudTime = cloudData._syncedAt ? new Date(cloudData._syncedAt).getTime() : 0;
+    if (cloudTime > localTime + 500) {
+      if (silent || confirm('Se encontró una versión más reciente en el archivo. ¿Cargarla?\n(Los cambios locales serán descartados.)')) {
+        state = cloudData;
+        saveLocal();
+        renderFilters();
+        renderBoard();
+      }
+    }
+  } catch (e) {
+    console.warn('Pull failed', e);
+  }
+}
+
+async function syncNow() {
+  if (!syncEnabled) return;
+  await pullFromCloud();
+  await pushToCloud();
+  renderCloudModal();
+}
+
+function scheduleCloudPush() {
+  if (!syncEnabled) return;
+  clearTimeout(syncTimer);
+  setSyncState('saving');
+  syncTimer = setTimeout(() => { pushToCloud(); }, 1500);
+}
+
+function openCloudModal() {
+  renderCloudModal();
+  document.getElementById('cloudModal').classList.add('open');
+}
+
+function closeCloudModal() {
+  document.getElementById('cloudModal').classList.remove('open');
+}
+
+function renderCloudModal() {
+  const body = document.getElementById('cloudModalBody');
+  let html = '';
+
+  if (!SYNC_SUPPORTED) {
+    html += `
+      <div class="cloud-status-box err">
+        <h4>Navegador no compatible</h4>
+        <p style="font-size: 12px; color: var(--ink-soft); margin-top: 4px;">
+          Este navegador no soporta la API de acceso a archivos que se necesita para sincronizar con iCloud/OneDrive.
+          Abre este archivo en <strong>Chrome</strong>, <strong>Edge</strong>, <strong>Brave</strong> o <strong>Arc</strong> en Mac/Windows.
+        </p>
+      </div>
+      <div class="cloud-help">
+        Mientras tanto, puedes usar el botón <strong>Descargar copia</strong> de la barra de herramientas para guardar respaldos manuales en iCloud Drive o OneDrive.
+      </div>
+    `;
+  } else if (syncEnabled && cloudHandle) {
+    const fileName = cloudHandle.name || 'finca-el-rocio.json';
+    const lastSync = state._syncedAt ? new Date(state._syncedAt).toLocaleString('es-CO') : 'nunca';
+    html += `
+      <div class="cloud-status-box ok">
+        <h4>✓ Sincronizado con archivo en la nube</h4>
+        <div class="stat-line">Archivo: <strong>${escapeHTML(fileName)}</strong></div>
+        <div class="stat-line">Última sincronización: ${lastSync}</div>
+      </div>
+      <div class="cloud-help">
+        Todos los cambios se guardan automáticamente en el archivo ~1,5 segundos después de cada modificación.
+        Si el archivo está en tu carpeta de <strong>iCloud Drive</strong> u <strong>OneDrive</strong>, se subirá a la nube en segundo plano.
+      </div>
+      <div class="cloud-actions">
+        <button class="cloud-action-btn" onclick="syncNow()">
+          <div><span>Sincronizar ahora</span><span class="desc">Forzar lectura y escritura del archivo</span></div>
+          <span>↻</span>
+        </button>
+        <button class="cloud-action-btn danger" onclick="unlinkCloud()">
+          <div><span>Desvincular archivo</span><span class="desc">Los datos quedan en el navegador; el archivo no se toca</span></div>
+          <span>×</span>
+        </button>
+      </div>
+    `;
+  } else if (cloudHandle && !syncEnabled) {
+    html += `
+      <div class="cloud-status-box warn">
+        <h4>Permiso necesario</h4>
+        <p style="font-size: 12px; color: var(--ink-soft); margin-top: 4px;">
+          Ya hay un archivo vinculado pero el navegador necesita que autorices de nuevo el acceso.
+          Esto ocurre al recargar la página o abrir la app en una sesión nueva.
+        </p>
+      </div>
+      <div class="cloud-actions">
+        <button class="cloud-action-btn primary" onclick="reconnectCloud()">
+          <div><span>Reconectar archivo</span><span class="desc">Autorizar lectura y escritura</span></div>
+          <span>→</span>
+        </button>
+        <button class="cloud-action-btn danger" onclick="unlinkCloud()">
+          <div><span>Desvincular</span><span class="desc">Olvidar el archivo</span></div>
+          <span>×</span>
+        </button>
+      </div>
+    `;
+  } else {
+    html += `
+      <div class="cloud-status-box">
+        <h4>Aún no hay archivo vinculado</h4>
+        <p style="font-size: 12px; color: var(--ink-soft); margin-top: 4px;">
+          Los datos se están guardando solo en este navegador. Vincula un archivo para sincronización automática.
+        </p>
+      </div>
+      <div class="cloud-help">
+        <strong>Cómo funciona:</strong> vas a elegir dónde guardar un archivo <code>finca-el-rocio.json</code>. Si lo pones dentro de tu carpeta de <strong>iCloud Drive</strong> u <strong>OneDrive</strong>, la nube lo subirá automáticamente y podrás verlo desde el iPhone, iPad, o iCloud.com.<br><br>
+        <strong>Recomendado en macOS:</strong> guarda el archivo en <code>iCloud Drive → Carpeta que elijas → finca-el-rocio.json</code>.<br>
+        <strong>En Windows:</strong> guárdalo dentro de tu carpeta <code>OneDrive</code>.<br><br>
+        Tras vincularlo, cada cambio se escribe al archivo automáticamente en ~1,5 segundos.
+      </div>
+      <div class="cloud-actions">
+        <button class="cloud-action-btn primary" onclick="pickCloudFile()">
+          <div><span>Vincular archivo en la nube</span><span class="desc">Elige o crea el .json en iCloud Drive u OneDrive</span></div>
+          <span>→</span>
+        </button>
+      </div>
+    `;
+  }
+
+  body.innerHTML = html;
+}
+
+// ============ STATE / LOAD ============
+function loadState() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw) {
+    try {
+      state = JSON.parse(raw);
+      if (!state.projects) state.projects = [];
+      if (!state.activities) state.activities = [];
+      state.activities.forEach(a => {
+        if (a.priority === undefined) a.priority = 3;
+        if (a.fechaPlaneada === undefined) a.fechaPlaneada = null;
+        if (Array.isArray(a.materials)) {
+          a.materials = a.materials.map(m => {
+            if (m.quantity === undefined) return { name: m.name||'', quantity: 1, unit: '', unitCost: Number(m.cost)||0 };
+            return m;
+          });
+        }
+      });
+      return;
+    } catch (e) { console.error('Load error', e); }
+  }
+  // Also check legacy keys
+  const legacy = localStorage.getItem('finca-el-rocio-kanban-v2') || localStorage.getItem('finca-el-rocio-kanban-v1');
+  if (legacy) {
+    try {
+      state = JSON.parse(legacy);
+      state.activities.forEach(a => {
+        if (a.priority === undefined) a.priority = 3;
+        if (a.fechaPlaneada === undefined) a.fechaPlaneada = null;
+        if (Array.isArray(a.materials)) {
+          a.materials = a.materials.map(m => {
+            if (m.quantity === undefined) return { name: m.name||'', quantity: 1, unit: '', unitCost: Number(m.cost)||0 };
+            return m;
+          });
+        }
+      });
+      saveLocal();
+      return;
+    } catch (e) {}
+  }
+  seedState();
+}
+
+function seedState() {
+  state = {
+    projects: [
+      { id: uid(), name: 'Abonar la Finca', type: 'recurrente', color: '#3B5D2C', description: 'Programa recurrente de fertilización.' },
+      { id: uid(), name: 'Control de arvenses', type: 'recurrente', color: '#4A6B3E', description: 'Manejo integrado de arvenses.' },
+      { id: uid(), name: 'Manejo de sombrío', type: 'recurrente', color: '#7A6E3B', description: 'Podas de regulación de sombrío.' },
+      { id: uid(), name: 'Siembra Cafés Especiales', type: 'proyecto', color: '#8B6F2A', description: 'Siembra de variedades especiales.' },
+    ],
+    activities: [],
+    _syncedAt: null,
+  };
+  saveLocal();
+}
+
+function saveLocal() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function saveState() {
+  saveLocal();
+  scheduleCloudPush();
+}
+
+function uid() { return Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4); }
+
+// ============ FORMATTING ============
+function fmtCOP(n) { if (!n) return '$ 0'; return '$ ' + Math.round(n).toLocaleString('es-CO'); }
+function fmtCOPk(n) { if (!n) return '$0'; if (n>=1000000) return '$'+(n/1000000).toFixed(1)+'M'; if (n>=1000) return '$'+Math.round(n/1000)+'k'; return '$'+Math.round(n); }
+function fmtDate(iso) { if (!iso) return ''; const d = new Date(iso); return `${String(d.getDate()).padStart(2,'0')}·${String(d.getMonth()+1).padStart(2,'0')}·${String(d.getFullYear()).slice(-2)}`; }
+function fmtDateShort(d) { const m=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']; return `${d.getDate()} ${m[d.getMonth()]}`; }
+function activityCost(act) { return (act.materials||[]).reduce((s,m)=>s+((Number(m.quantity)||0)*(Number(m.unitCost)||0)),0); }
+function activityDuration(act) { const j=Number(act.jornales)||0, p=Number(act.personas)||1; return p===0?0:j/p; }
+
+// ============ WEEK UTILS ============
+function startOfWeek(d) { const date=new Date(d); const day=date.getDay(); const diff=(day===0?-6:1-day); date.setDate(date.getDate()+diff); date.setHours(0,0,0,0); return date; }
+function endOfWeek(d) { const s=startOfWeek(d); const e=new Date(s); e.setDate(s.getDate()+6); e.setHours(23,59,59,999); return e; }
+
+// ============ WORKLOAD ============
+function renderWorkload() {
+  const container = document.getElementById('workloadBody');
+  const today = new Date();
+  const currentWeekStart = startOfWeek(today);
+  const weeks = [];
+  for (let i=0; i<5; i++) {
+    const ws=new Date(currentWeekStart); ws.setDate(ws.getDate()+i*7);
+    const we=endOfWeek(ws);
+    weeks.push({ start: ws, end: we, jornales: 0, cost: 0, count: 0 });
+  }
+  state.activities.forEach(a => {
+    if (!a.fechaPlaneada) return;
+    if (a.status==='terminado' || a.status==='ideado') return;
+    const d = new Date(a.fechaPlaneada+'T00:00:00');
+    for (const w of weeks) {
+      if (d>=w.start && d<=w.end) {
+        w.jornales += Number(a.jornales)||0;
+        w.cost += activityCost(a);
+        w.count += 1;
+        break;
+      }
+    }
+  });
+  const totalJ = weeks.reduce((s,w)=>s+w.jornales,0);
+  const totalC = weeks.reduce((s,w)=>s+w.cost,0);
+  container.innerHTML = weeks.map((w,i) => {
+    const isCurrent = i===0;
+    const jPct = totalJ>0 ? (w.jornales/totalJ)*100 : 0;
+    const cPct = totalC>0 ? (w.cost/totalC)*100 : 0;
+    const jLabel = w.jornales>0 ? `${w.jornales} J` : '—';
+    const cLabel = w.cost>0 ? fmtCOPk(w.cost) : '—';
+    return `<div class="week-col ${isCurrent?'current':''}">
+      <span class="week-count">${w.count}</span>
+      <div class="week-header"><span class="week-label">${isCurrent?'Actual':'Sem +'+i}</span></div>
+      <div class="week-dates">${fmtDateShort(w.start)} – ${fmtDateShort(w.end)}</div>
+      <div class="week-chart">
+        <div class="week-bar-col">
+          <div class="week-bar-label" title="${w.jornales} jornales">${jLabel}</div>
+          <div class="week-bar-track"><div class="week-bar bar-jornales" style="height: ${jPct}%"></div></div>
+          <div class="week-bar-caption">${jPct.toFixed(0)}%</div>
+        </div>
+        <div class="week-bar-col">
+          <div class="week-bar-label" title="${fmtCOP(w.cost)} COP">${cLabel}</div>
+          <div class="week-bar-track"><div class="week-bar bar-cost" style="height: ${cPct}%"></div></div>
+          <div class="week-bar-caption">${cPct.toFixed(0)}%</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ============ BOARD ============
+function renderBoard() {
+  const board = document.getElementById('board');
+  const fp = document.getElementById('filterProject').value;
+  const fl = document.getElementById('filterLot').value;
+  board.innerHTML = '';
+  COLUMNS.forEach(col => {
+    let acts = state.activities.filter(a => {
+      if (a.status !== col.id) return false;
+      if (fp && a.projectId !== fp) return false;
+      if (fl && !(a.lots||[]).includes(fl)) return false;
+      return true;
+    });
+    acts.sort((a,b) => (a.priority||3)-(b.priority||3));
+    const totalJ = acts.reduce((s,a)=>s+(Number(a.jornales)||0),0);
+    const totalC = acts.reduce((s,a)=>s+activityCost(a),0);
+    const el = document.createElement('div');
+    el.className = `column ${col.id}`;
+    el.dataset.status = col.id;
+    el.innerHTML = `
+      <div class="col-header">
+        <div class="col-title-row"><div class="col-title serif">${col.title}</div><div class="col-count mono">${acts.length}</div></div>
+        <div class="col-meta"><span><strong>${totalJ}</strong> jornales</span><span>·</span><span><strong>${fmtCOP(totalC)}</strong></span></div>
+      </div>
+      <div class="col-body" data-status="${col.id}">
+        ${acts.length===0 ? `<div class="col-empty">Sin actividades</div>` : acts.map(a=>renderCard(a)).join('')}
+      </div>
+    `;
+    board.appendChild(el);
+  });
+  setupDragDrop();
+  renderSummary();
+  renderWorkload();
+}
+
+function renderCard(act) {
+  const project = state.projects.find(p=>p.id===act.projectId);
+  const projectName = project ? project.name : 'Sin proyecto';
+  const projectColor = project ? project.color : '#7B7A6E';
+  const cost = activityCost(act);
+  const lotChips = (act.lots||[]).slice(0,3).map(lid=>`<span class="lot-chip">${lid}</span>`).join('');
+  const extra = (act.lots||[]).length>3 ? `<span class="lot-chip more">+${act.lots.length-3}</span>` : '';
+  const dur = activityDuration(act);
+  const prio = act.priority || 3;
+  const prioLbl = PRIORITY_LABELS[prio];
+  const dateDisplay = act.fechaPlaneada
+    ? `<div class="card-date planned">▸ ${fmtDate(act.fechaPlaneada)}</div>`
+    : `<div class="card-date">${fmtDate(act.statusChangedAt||act.createdAt)}</div>`;
+
+  return `<div class="card" draggable="true" data-id="${act.id}" onclick="openActivityModal('${act.id}')">
+    <div class="card-thread" style="background: ${projectColor}"></div>
+    <div class="card-body">
+      <div class="card-top">
+        <div class="card-project-wrap"><div class="card-project"><span class="dot" style="background: ${projectColor}"></span>${escapeHTML(projectName)}</div></div>
+        <div class="priority-badge p${prio}" data-label="${prioLbl}" title="Prioridad ${prio} · ${prioLbl}">${prio}</div>
+      </div>
+      <div class="card-title">${escapeHTML(act.name||'Sin nombre')}</div>
+      ${lotChips||extra ? `<div class="card-lots">${lotChips}${extra}</div>` : ''}
+      <div class="card-metrics">
+        <div class="metric"><div class="metric-label">Jornales</div><div class="metric-value">${act.jornales||0}</div></div>
+        <div class="metric"><div class="metric-label">Personas</div><div class="metric-value">${act.personas||1}</div></div>
+        <div class="metric"><div class="metric-label">Días</div><div class="metric-value">${dur.toFixed(1)}</div></div>
+      </div>
+      <div class="card-footer">
+        <div class="card-cost">${fmtCOP(cost)} <span class="unit">COP</span></div>
+        ${dateDisplay}
+      </div>
+    </div>
+  </div>`;
+}
+
+function escapeHTML(s) { return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function renderSummary() {
+  const active = state.activities.filter(a=>a.status!=='terminado');
+  const done = state.activities.filter(a=>a.status==='terminado');
+  const pending = active.filter(a=>a.status!=='espera');
+  const totalJ = pending.reduce((s,a)=>s+(Number(a.jornales)||0),0);
+  const totalC = active.reduce((s,a)=>s+activityCost(a),0);
+  const usedLots = new Set();
+  active.forEach(a=>(a.lots||[]).forEach(l=>usedLots.add(l)));
+  document.getElementById('statActive').textContent = active.length;
+  document.getElementById('statJornales').textContent = totalJ;
+  document.getElementById('statCost').innerHTML = `${fmtCOP(totalC)}<span class="unit">COP</span>`;
+  document.getElementById('statLots').innerHTML = `${usedLots.size} <span class="unit">de ${LOTS.length}</span>`;
+  document.getElementById('statDone').textContent = done.length;
+}
+
+function renderFilters() {
+  const projSel = document.getElementById('filterProject');
+  const cp = projSel.value;
+  projSel.innerHTML = '<option value="">Todos los proyectos</option>' + state.projects.map(p=>`<option value="${p.id}">${escapeHTML(p.name)}</option>`).join('');
+  projSel.value = cp;
+  const lotSel = document.getElementById('filterLot');
+  const cl = lotSel.value;
+  const g = groupLotsByModule();
+  let html = '<option value="">Todos los lotes</option>';
+  Object.keys(g).sort().forEach(mod => {
+    html += `<optgroup label="Módulo ${mod}">`;
+    g[mod].forEach(l => { html += `<option value="${l.id}">${l.id} — ${l.name}</option>`; });
+    html += `</optgroup>`;
+  });
+  lotSel.innerHTML = html;
+  lotSel.value = cl;
+}
+
+function groupLotsByModule() { const g={}; LOTS.forEach(l=>{ if(!g[l.modulo])g[l.modulo]=[]; g[l.modulo].push(l); }); return g; }
+
+function setupDragDrop() {
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', card.dataset.id); card.classList.add('dragging'); });
+    card.addEventListener('dragend', () => card.classList.remove('dragging'));
+  });
+  document.querySelectorAll('.column').forEach(col => {
+    col.addEventListener('dragover', e => { e.preventDefault(); col.classList.add('drag-over'); });
+    col.addEventListener('dragleave', e => { if (!col.contains(e.relatedTarget)) col.classList.remove('drag-over'); });
+    col.addEventListener('drop', e => {
+      e.preventDefault(); col.classList.remove('drag-over');
+      const id = e.dataTransfer.getData('text/plain');
+      const ns = col.dataset.status;
+      const act = state.activities.find(a=>a.id===id);
+      if (act && act.status !== ns) {
+        act.status = ns;
+        act.statusChangedAt = new Date().toISOString();
+        saveState();
+        renderBoard();
+      }
+    });
+  });
+}
+
+// ============ ACTIVITY MODAL ============
+function openActivityModal(id) {
+  editingActivityId = id || null;
+  const projSel = document.getElementById('actProject');
+  projSel.innerHTML = state.projects.length===0 ? '<option value="">(Cree un proyecto primero)</option>' : state.projects.map(p=>`<option value="${p.id}">${escapeHTML(p.name)}</option>`).join('');
+  renderLotPicker([]);
+  const eyebrow = document.getElementById('activityEyebrow');
+  const titleEl = document.getElementById('activityTitle');
+  const delBtn = document.getElementById('deleteActivityBtn');
+  if (id) {
+    const a = state.activities.find(x=>x.id===id);
+    if (!a) return;
+    titleEl.textContent = a.name || 'Actividad';
+    eyebrow.childNodes[0].textContent = 'Editar actividad';
+    delBtn.classList.remove('hidden');
+    document.getElementById('actName').value = a.name || '';
+    document.getElementById('actProject').value = a.projectId || (state.projects[0]?.id || '');
+    document.getElementById('actStatus').value = a.status || 'ideado';
+    document.getElementById('actJornales').value = a.jornales || 0;
+    document.getElementById('actPersonas').value = a.personas || 1;
+    document.getElementById('actDetails').value = a.details || '';
+    document.getElementById('actFechaPlaneada').value = a.fechaPlaneada || '';
+    selectPriority(a.priority || 3, true);
+    renderLotPicker(a.lots || []);
+    renderMaterials(a.materials || []);
+    updateDuration();
+  } else {
+    titleEl.textContent = 'Registrar actividad';
+    eyebrow.childNodes[0].textContent = 'Nueva actividad';
+    delBtn.classList.add('hidden');
+    document.getElementById('actName').value = '';
+    document.getElementById('actProject').value = state.projects[0]?.id || '';
+    document.getElementById('actStatus').value = 'ideado';
+    document.getElementById('actJornales').value = 0;
+    document.getElementById('actPersonas').value = 1;
+    document.getElementById('actDetails').value = '';
+    document.getElementById('actFechaPlaneada').value = '';
+    selectPriority(3, true);
+    renderMaterials([]);
+    updateDuration();
+  }
+  activityDirty = false;
+  updateDirtyIndicator('activity');
+  document.getElementById('activityModal').classList.add('open');
+  setTimeout(()=>document.getElementById('actName').focus(), 100);
+}
+
+function markActivityDirty() { activityDirty = true; updateDirtyIndicator('activity'); }
+
+function updateDirtyIndicator(w) {
+  if (w==='activity') document.getElementById('activityDirty').classList.toggle('on', activityDirty);
+  else document.getElementById('projectsDirty').classList.toggle('on', projectsDirty);
+}
+
+function requestCloseActivity() {
+  if (activityDirty && !confirm('Tienes cambios sin guardar. ¿Descartarlos y cerrar?\n\nOK = Descartar y cerrar\nCancelar = Volver al formulario')) return;
+  closeActivityModal();
+}
+
+function closeActivityModal() {
+  document.getElementById('activityModal').classList.remove('open');
+  editingActivityId = null;
+  activityDirty = false;
+}
+
+function selectPriority(p, silent) {
+  currentPriority = p;
+  document.querySelectorAll('#prioPicker .prio-opt').forEach(el => el.classList.toggle('selected', Number(el.dataset.prio)===p));
+  if (!silent) markActivityDirty();
+}
+
+function renderLotPicker(selected) {
+  const c = document.getElementById('lotPicker');
+  const g = groupLotsByModule();
+  let html = '';
+  Object.keys(g).sort().forEach(mod => {
+    html += `<div class="lot-module"><div class="lot-module-title">Módulo ${mod}</div><div class="lot-options">`;
+    g[mod].forEach(l => { html += `<div class="lot-opt ${selected.includes(l.id)?'selected':''}" data-id="${l.id}" onclick="toggleLot(this)">${l.id}<span class="lot-area">· ${l.area} ha</span></div>`; });
+    html += `</div></div>`;
+  });
+  c.innerHTML = html;
+}
+
+function toggleLot(el) { el.classList.toggle('selected'); markActivityDirty(); }
+
+function getSelectedLots() { return Array.from(document.querySelectorAll('#lotPicker .lot-opt.selected')).map(el=>el.dataset.id); }
+
+function renderMaterials(materials) {
+  const list = document.getElementById('materialsList');
+  list.innerHTML = '';
+  if (materials.length===0) materials = [{ name:'', quantity:1, unit:'', unitCost:0 }];
+  materials.forEach(m => addMaterialRow(m, true));
+  updateMaterialsTotal();
+}
+
+function addMaterialRow(existing, silent) {
+  const m = existing || { name:'', quantity:1, unit:'', unitCost:0 };
+  const list = document.getElementById('materialsList');
+  const row = document.createElement('div');
+  row.className = 'material-row';
+  row.innerHTML = `
+    <div class="mat-name-row">
+      <input type="text" class="mat-name" placeholder="Nombre del insumo o material" value="${escapeHTML(m.name||'')}" oninput="updateMaterialsTotal(); markActivityDirty();">
+      <button class="mat-remove" onclick="removeMaterial(this)" title="Eliminar">×</button>
+    </div>
+    <div class="mat-detail-row">
+      <div class="mat-field"><label>Cantidad</label><input type="number" class="mat-qty" min="0" step="0.1" value="${m.quantity||0}" oninput="updateMaterialsTotal(); markActivityDirty();"></div>
+      <div class="mat-field"><label>Unidad</label><input type="text" class="mat-unit" placeholder="kg, lt, u..." value="${escapeHTML(m.unit||'')}" oninput="markActivityDirty();"></div>
+      <div class="mat-field"><label>Costo unitario</label><input type="number" class="mat-unitcost" min="0" step="100" value="${m.unitCost||0}" oninput="updateMaterialsTotal(); markActivityDirty();"></div>
+      <div class="mat-field"><label>Total</label><div class="mat-total mat-total-cell">$ 0</div></div>
+    </div>
+  `;
+  list.appendChild(row);
+  updateMaterialsTotal();
+  if (!silent) markActivityDirty();
+}
+
+function removeMaterial(btn) { btn.closest('.material-row').remove(); updateMaterialsTotal(); markActivityDirty(); }
+
+function getMaterials() {
+  return Array.from(document.querySelectorAll('#materialsList .material-row')).map(row => ({
+    name: row.querySelector('.mat-name').value.trim(),
+    quantity: Number(row.querySelector('.mat-qty').value) || 0,
+    unit: row.querySelector('.mat-unit').value.trim(),
+    unitCost: Number(row.querySelector('.mat-unitcost').value) || 0,
+  })).filter(m => m.name || m.quantity || m.unitCost);
+}
+
+function updateMaterialsTotal() {
+  let total = 0;
+  document.querySelectorAll('#materialsList .material-row').forEach(row => {
+    const q = Number(row.querySelector('.mat-qty').value) || 0;
+    const u = Number(row.querySelector('.mat-unitcost').value) || 0;
+    const rt = q * u;
+    row.querySelector('.mat-total-cell').textContent = fmtCOP(rt);
+    total += rt;
+  });
+  document.getElementById('materialsTotal').textContent = `${fmtCOP(total)} COP`;
+}
+
+function updateDuration() {
+  const j = Number(document.getElementById('actJornales').value) || 0;
+  const p = Number(document.getElementById('actPersonas').value) || 1;
+  const d = p>0 ? j/p : 0;
+  document.getElementById('durationBox').innerHTML = `<strong>${d.toFixed(1)}</strong> días · ${j} jornales ÷ ${p} personas`;
+  markActivityDirty();
+}
+
+function saveActivity() {
+  const name = document.getElementById('actName').value.trim();
+  if (!name) { alert('La actividad necesita un nombre.'); return; }
+  const data = {
+    name,
+    projectId: document.getElementById('actProject').value || null,
+    status: document.getElementById('actStatus').value,
+    lots: getSelectedLots(),
+    jornales: Number(document.getElementById('actJornales').value) || 0,
+    personas: Number(document.getElementById('actPersonas').value) || 1,
+    materials: getMaterials(),
+    details: document.getElementById('actDetails').value.trim(),
+    fechaPlaneada: document.getElementById('actFechaPlaneada').value || null,
+    priority: currentPriority,
+  };
+  if (editingActivityId) {
+    const idx = state.activities.findIndex(a=>a.id===editingActivityId);
+    const prev = state.activities[idx];
+    const sc = prev.status !== data.status;
+    state.activities[idx] = { ...prev, ...data, updatedAt: new Date().toISOString(), statusChangedAt: sc ? new Date().toISOString() : prev.statusChangedAt };
+  } else {
+    state.activities.push({ id: uid(), ...data, createdAt: new Date().toISOString(), statusChangedAt: new Date().toISOString() });
+  }
+  saveState();
+  renderBoard();
+  activityDirty = false;
+  closeActivityModal();
+}
+
+function deleteActivity() {
+  if (!editingActivityId) return;
+  if (!confirm('¿Eliminar esta actividad? No se puede deshacer.')) return;
+  state.activities = state.activities.filter(a=>a.id!==editingActivityId);
+  saveState();
+  renderBoard();
+  activityDirty = false;
+  closeActivityModal();
+}
+
+// ============ PROJECTS ============
+function openProjectsModal() {
+  projectsSnapshot = JSON.stringify(state.projects);
+  projectsDirty = false;
+  updateDirtyIndicator('projects');
+  renderProjectsList();
+  document.getElementById('projectsModal').classList.add('open');
+}
+
+function requestCloseProjects() {
+  if (projectsDirty) {
+    if (!confirm('Tienes cambios sin guardar en proyectos. ¿Descartarlos y cerrar?\n\nOK = Descartar y cerrar\nCancelar = Volver al formulario')) return;
+    try { state.projects = JSON.parse(projectsSnapshot); saveLocal(); } catch(e) {}
+  } else {
+    saveState();
+  }
+  closeProjectsModal();
+}
+
+function closeProjectsModal() {
+  document.getElementById('projectsModal').classList.remove('open');
+  projectsDirty = false;
+  renderFilters();
+  renderBoard();
+}
+
+function markProjectsDirty() { projectsDirty = true; updateDirtyIndicator('projects'); }
+
+function renderProjectsList() {
+  const list = document.getElementById('projectsList');
+  list.innerHTML = state.projects.map(p => {
+    const count = state.activities.filter(a=>a.projectId===p.id).length;
+    const jornales = state.activities.filter(a=>a.projectId===p.id).reduce((s,a)=>s+(Number(a.jornales)||0),0);
+    return `<div class="project-item">
+      <div class="project-swatch" style="background: ${p.color}" onclick="cycleProjectColor('${p.id}', event)" title="Cambiar color"></div>
+      <input class="project-name-input" value="${escapeHTML(p.name)}" onchange="updateProject('${p.id}', 'name', this.value)">
+      <select class="project-type-select" onchange="updateProject('${p.id}', 'type', this.value)">
+        <option value="recurrente" ${p.type==='recurrente'?'selected':''}>Recurrente</option>
+        <option value="proyecto" ${p.type==='proyecto'?'selected':''}>Proyecto</option>
+      </select>
+      <div class="project-stats">${count} act.<br>${jornales} jorn.</div>
+      <button class="danger mini-btn" onclick="deleteProject('${p.id}')">×</button>
+    </div>`;
+  }).join('') || '<p style="color: var(--meta); text-align: center; padding: 20px;">Aún no hay proyectos.</p>';
+}
+
+function cycleProjectColor(id, event) {
+  event.stopPropagation();
+  const p = state.projects.find(x=>x.id===id);
+  if (!p) return;
+  const idx = PROJECT_COLORS.indexOf(p.color);
+  p.color = PROJECT_COLORS[(idx+1)%PROJECT_COLORS.length];
+  markProjectsDirty();
+  renderProjectsList();
+}
+
+function updateProject(id, field, value) {
+  const p = state.projects.find(x=>x.id===id);
+  if (!p) return;
+  p[field] = value;
+  markProjectsDirty();
+  if (field==='name') renderProjectsList();
+}
+
+function addProject() {
+  const name = prompt('Nombre del nuevo proyecto o programa:');
+  if (!name) return;
+  const used = state.projects.map(p=>p.color);
+  const avail = PROJECT_COLORS.find(c=>!used.includes(c)) || PROJECT_COLORS[state.projects.length%PROJECT_COLORS.length];
+  state.projects.push({ id: uid(), name: name.trim(), type: 'recurrente', color: avail, description: '' });
+  markProjectsDirty();
+  renderProjectsList();
+}
+
+function deleteProject(id) {
+  const p = state.projects.find(x=>x.id===id);
+  if (!p) return;
+  const count = state.activities.filter(a=>a.projectId===id).length;
+  const msg = count>0 ? `El proyecto "${p.name}" tiene ${count} actividad(es) asociadas. Quedarán sin proyecto. ¿Continuar?` : `¿Eliminar el proyecto "${p.name}"?`;
+  if (!confirm(msg)) return;
+  state.activities.forEach(a=>{ if (a.projectId===id) a.projectId=null; });
+  state.projects = state.projects.filter(x=>x.id!==id);
+  markProjectsDirty();
+  renderProjectsList();
+}
+
+// ============ EXPORT / IMPORT ============
+function exportData() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const stamp = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `finca-el-rocio-${stamp}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (!imported.projects || !imported.activities) throw new Error('Formato inválido');
+      if (!confirm(`Se importarán ${imported.projects.length} proyectos y ${imported.activities.length} actividades. Reemplaza los datos actuales. ¿Continuar?`)) return;
+      state = imported;
+      saveState();
+      loadState();
+      renderFilters();
+      renderBoard();
+    } catch (err) {
+      alert('Archivo inválido: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function attachDirtyListeners() {
+  ['actName','actProject','actStatus','actJornales','actPersonas','actDetails','actFechaPlaneada'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', markActivityDirty);
+    if (el && el.tagName === 'SELECT') el.addEventListener('change', markActivityDirty);
+  });
+}
+
+// ============ INIT ============
+loadState();
+renderFilters();
+renderBoard();
+attachDirtyListeners();
+initCloudSync();
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (document.getElementById('activityModal').classList.contains('open')) requestCloseActivity();
+    else if (document.getElementById('projectsModal').classList.contains('open')) requestCloseProjects();
+    else if (document.getElementById('cloudModal').classList.contains('open')) closeCloudModal();
+  }
+});
+
+window.addEventListener('beforeunload', e => {
+  if (activityDirty || projectsDirty) { e.preventDefault(); e.returnValue = ''; }
+});
+
+// Try to pull from cloud when window regains focus (in case of edits elsewhere)
+let lastFocusPull = 0;
+window.addEventListener('focus', () => {
+  const now = Date.now();
+  if (syncEnabled && now - lastFocusPull > 5000) {
+    lastFocusPull = now;
+    pullFromCloud();
+  }
+});
+</script>
+</body>
+</html>
