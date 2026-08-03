@@ -87,6 +87,18 @@ html, body {
   color: var(--meta);
   font-weight: 500;
 }
+.version-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--meta);
+  background: var(--bg-deep);
+  padding: 2px 7px;
+  border-radius: 10px;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  border: 1px solid var(--hairline-soft);
+  align-self: center;
+}
 .brand-right { display: flex; align-items: center; gap: 10px; }
 
 /* Sync pill */
@@ -463,6 +475,7 @@ textarea { resize: vertical; min-height: 60px; font-family: 'Inter', sans-serif;
       <div class="brand-left">
         <h1 class="serif">Finca El Rocío</h1>
         <span class="subtitle">Control de Actividades</span>
+        <span class="version-tag" title="Versión de la aplicación">v1.0</span>
       </div>
       <div class="brand-right">
         <button class="sync-pill" id="syncPill" onclick="openCloudModal()">
