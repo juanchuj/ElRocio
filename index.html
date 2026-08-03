@@ -512,6 +512,20 @@ textarea { resize: vertical; min-height: 60px; font-family: 'Inter', sans-serif;
 .section-label:first-child { margin-top: 0; }
 
 .projects-list { display: flex; flex-direction: column; gap: 6px; }
+.archive-toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.archive-count { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--meta); margin-left: auto; }
+.archive-list { display: flex; flex-direction: column; gap: 6px; max-height: 380px; overflow-y: auto; }
+.archive-row { display: grid; grid-template-columns: 22px 34px 1fr auto; gap: 10px; align-items: center; padding: 8px 10px; background: var(--card); border: 1px solid var(--hairline-soft); border-radius: var(--radius); cursor: pointer; transition: border-color 0.12s; }
+.archive-row:hover { border-color: var(--hairline); }
+.archive-row.sel { background: var(--primary-soft); border-color: var(--primary); }
+.archive-row input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; }
+.archive-prio { display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 5px; color: white; font-family: 'Fraunces', serif; font-weight: 600; font-size: 14px; }
+.archive-prio.p1 { background: var(--prio-1); } .archive-prio.p2 { background: var(--prio-2); }
+.archive-prio.p3 { background: var(--prio-3); } .archive-prio.p4 { background: var(--prio-4); } .archive-prio.p5 { background: var(--prio-5); }
+.archive-info { min-width: 0; }
+.archive-name { font-size: 13px; font-weight: 500; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.archive-sub { font-size: 10px; color: var(--meta); font-family: 'JetBrains Mono', monospace; margin-top: 1px; }
+.archive-cost { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: var(--ink-soft); white-space: nowrap; }
 .project-item { display: grid; grid-template-columns: 24px 1fr 100px 90px 60px 40px; gap: 10px; align-items: center; padding: 8px 10px; background: var(--card); border: 1px solid var(--hairline-soft); border-radius: var(--radius); }
 .project-item.is-child { margin-left: 24px; background: var(--card-alt); border-left: 3px solid var(--hairline); }
 .project-item.is-child .project-name-input { font-size: 12px; }
@@ -565,7 +579,7 @@ textarea { resize: vertical; min-height: 60px; font-family: 'Inter', sans-serif;
       <div class="brand-left">
         <h1 class="serif">Finca El Rocío</h1>
         <span class="subtitle">Control de Actividades</span>
-        <span class="version-tag" title="Versión de la aplicación">v1.3</span>
+        <span class="version-tag" title="Versión de la aplicación">v1.4</span>
       </div>
       <div class="brand-right">
         <button class="sync-pill" id="syncPill" onclick="openCloudModal()">
@@ -731,6 +745,37 @@ textarea { resize: vertical; min-height: 60px; font-family: 'Inter', sans-serif;
     <div class="modal-footer">
       <div class="spacer"></div>
       <button onclick="closeCloudModal()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ARCHIVE MODAL -->
+<div class="modal-backdrop" id="archiveModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-eyebrow">Terminadas</div>
+        <div class="modal-title serif">Archivar tareas</div>
+      </div>
+      <button class="modal-close" onclick="closeArchiveModal()" title="Cerrar">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="color: var(--meta); font-size: 12px; margin-bottom: 12px;">
+        Selecciona las tareas terminadas que quieres archivar. Se descargará un CSV con su información y luego se eliminarán del tablero.
+      </p>
+      <div class="archive-toolbar">
+        <button class="mini-btn" onclick="archiveSelectAll(true)">Seleccionar todas</button>
+        <button class="mini-btn" onclick="archiveSelectAll(false)">Ninguna</button>
+        <span class="archive-count" id="archiveCount">0 seleccionadas</span>
+      </div>
+      <div class="archive-list" id="archiveList"></div>
+    </div>
+    <div class="modal-footer">
+      <div class="spacer"></div>
+      <div class="footer-actions">
+        <button onclick="closeArchiveModal()">Cancelar</button>
+        <button class="primary" id="archiveConfirmBtn" onclick="confirmArchive()">Archivar seleccionadas</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1935,14 +1980,69 @@ function csvEscape(v) {
   return s;
 }
 
+let archiveSelected = new Set();
+
 function archiveTerminadas() {
   const done = state.activities.filter(a => a.status === 'terminado');
   if (done.length === 0) { alert('No hay tareas terminadas para archivar.'); return; }
-  if (!confirm(`Vas a archivar ${done.length} tarea(s) terminada(s).\n\nSe descargará un archivo CSV con toda su información y luego se ELIMINARÁN del tablero.\n\n¿Continuar?`)) return;
+  // Pre-select all by default
+  archiveSelected = new Set(done.map(a => a.id));
+  renderArchiveList();
+  document.getElementById('archiveModal').classList.add('open');
+}
 
-  // Build CSV
+function closeArchiveModal() {
+  document.getElementById('archiveModal').classList.remove('open');
+}
+
+function renderArchiveList() {
+  const done = state.activities.filter(a => a.status === 'terminado')
+    .sort((a,b) => (a.priority||3)-(b.priority||3));
+  const list = document.getElementById('archiveList');
+  list.innerHTML = done.map(a => {
+    const proj = a.projectId ? projectDisplayName(a.projectId) : 'Sin proyecto';
+    const prio = a.priority || 3;
+    const lots = (a.lots||[]).length ? (a.lots||[]).slice(0,3).join(' · ') + ((a.lots||[]).length>3?` +${a.lots.length-3}`:'') : 'Sin lotes';
+    const sel = archiveSelected.has(a.id);
+    return `<label class="archive-row ${sel?'sel':''}" data-id="${a.id}">
+      <input type="checkbox" ${sel?'checked':''} onchange="toggleArchiveSel('${a.id}', this.checked)">
+      <span class="archive-prio p${prio}">${prio}</span>
+      <span class="archive-info">
+        <div class="archive-name">${escapeHTML(a.name||'Sin nombre')}</div>
+        <div class="archive-sub">${escapeHTML(proj)} · ${escapeHTML(lots)}</div>
+      </span>
+      <span class="archive-cost">${fmtCOP(activityCost(a))}</span>
+    </label>`;
+  }).join('');
+  updateArchiveCount();
+}
+
+function toggleArchiveSel(id, checked) {
+  if (checked) archiveSelected.add(id); else archiveSelected.delete(id);
+  const row = document.querySelector(`.archive-row[data-id="${id}"]`);
+  if (row) row.classList.toggle('sel', checked);
+  updateArchiveCount();
+}
+
+function archiveSelectAll(all) {
+  const done = state.activities.filter(a => a.status === 'terminado');
+  archiveSelected = all ? new Set(done.map(a=>a.id)) : new Set();
+  renderArchiveList();
+}
+
+function updateArchiveCount() {
+  const n = archiveSelected.size;
+  document.getElementById('archiveCount').textContent = `${n} seleccionada${n!==1?'s':''}`;
+  document.getElementById('archiveConfirmBtn').disabled = n === 0;
+}
+
+function confirmArchive() {
+  const toArchive = state.activities.filter(a => a.status==='terminado' && archiveSelected.has(a.id));
+  if (toArchive.length === 0) { alert('No hay tareas seleccionadas.'); return; }
+  if (!confirm(`Se archivarán ${toArchive.length} tarea(s).\n\nSe descargará un CSV con su información y luego se ELIMINARÁN del tablero. ¿Continuar?`)) return;
+
   const headers = ['Nombre','Proyecto','Estado','Prioridad','Lotes','Jornales','Personas','Duración (días)','Duración editada','Contratada externo','Costo insumos (COP)','Insumos (detalle)','Detalles','Fecha planeada','Creada','Último cambio de estado'];
-  const rows = done.map(a => {
+  const rows = toArchive.map(a => {
     const proj = a.projectId ? projectDisplayName(a.projectId) : 'Sin proyecto';
     const lotsStr = (a.lots||[]).join(' | ');
     const matStr = (a.materials||[]).map(m => {
@@ -1950,9 +2050,7 @@ function archiveTerminadas() {
       return `${m.name}: ${m.quantity||0} ${m.unit||''} x ${fmtCOP(m.unitCost||0)} = ${fmtCOP(t)}`;
     }).join(' || ');
     return [
-      a.name || '',
-      proj,
-      'Terminado',
+      a.name || '', proj, 'Terminado',
       `${a.priority||3} (${PRIORITY_LABELS[a.priority||3]})`,
       lotsStr,
       a.external ? '' : (a.jornales||0),
@@ -1960,8 +2058,7 @@ function archiveTerminadas() {
       activityDuration(a).toFixed(1),
       isDurationEdited(a) ? 'Sí' : 'No',
       a.external ? 'Sí' : 'No',
-      activityCost(a),
-      matStr,
+      activityCost(a), matStr,
       (a.details||'').replace(/\n/g,' '),
       a.fechaPlaneada || '',
       a.createdAt ? new Date(a.createdAt).toLocaleString('es-CO') : '',
@@ -1979,10 +2076,10 @@ function archiveTerminadas() {
   link.click();
   URL.revokeObjectURL(url);
 
-  // Delete the archived activities
-  const archivedIds = new Set(done.map(a => a.id));
+  const archivedIds = new Set(toArchive.map(a => a.id));
   state.activities = state.activities.filter(a => !archivedIds.has(a.id));
   saveState();
+  closeArchiveModal();
   renderBoard();
 }
 
@@ -2041,6 +2138,7 @@ document.addEventListener('keydown', e => {
     if (document.getElementById('activityModal').classList.contains('open')) requestCloseActivity();
     else if (document.getElementById('projectsModal').classList.contains('open')) requestCloseProjects();
     else if (document.getElementById('cloudModal').classList.contains('open')) closeCloudModal();
+    else if (document.getElementById('archiveModal').classList.contains('open')) closeArchiveModal();
   }
 });
 
